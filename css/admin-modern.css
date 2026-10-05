@@ -92,7 +92,8 @@ body.mk-admin-body select { font: inherit; }
   font-weight: 900;
 }
 .mk-admin-body #openNav,
-.mk-admin-body #closeNav { display: none !important; }
+.mk-admin-body #closeNav { width: 42px; padding: 0; font-size: 17px; }
+.mk-admin-body #closeNav { display: none; }
 .mk-admin-body #cpage {
   justify-content: flex-start;
   max-width: min(40vw, 430px);
@@ -122,7 +123,7 @@ body.mk-admin-body select { font: inherit; }
   position: fixed;
   inset: var(--mk-topbar) auto 0 0;
   z-index: 1050;
-  width: var(--mk-sidebar) !important;
+  width: 264px !important;
   height: auto;
   margin: 0;
   padding: 16px 12px 26px;
@@ -186,15 +187,27 @@ body.mk-admin-body select { font: inherit; }
 }
 .mk-admin-body .sidenav .card-header h3 { margin: 0; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .mk-admin-body .sidenav .spa { min-height: 1px; margin: 10px 4px; padding: 0; border-bottom: 1px solid rgba(255,255,255,.1); border-radius: 0; }
+.mk-sidebar-group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0 6px;
+  padding: 10px 12px 6px;
+  color: rgba(255,255,255,.44);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.mk-sidebar-group-label .fa { width: 18px; text-align: center; font-size: 12px; }
 
-/* Legacy side navigation is replaced by page-level reseller tabs. */
-.mk-admin-body .sidenav { display: none !important; }
+/* Sidebar is visible by default on desktop */
 
 /* Main content */
 .mk-admin-body #main {
   min-width: 0;
   min-height: 100vh;
-  margin-left: 0 !important;
+  margin-left: 264px !important;
   padding-top: var(--mk-topbar);
   background: var(--mk-bg);
   transition: margin .24s ease;
@@ -335,6 +348,32 @@ body.mk-admin-body select { font: inherit; }
 .mk-admin-stat h4 { margin: 12px 0 0; color: var(--mk-muted); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
 .mk-admin-stat small { color: var(--mk-muted); }
 
+/* Colored stat cards */
+.mk-admin-stat.panel-success { border-color: #b8e6c8 !important; background: linear-gradient(160deg, #f0faf4 0%, #e2f5ea 100%) !important; }
+.mk-admin-stat.panel-success .fa-2x { color: #22814a; background: #c6f0d5; }
+.mk-admin-stat.panel-success h3 { color: #1b6e3d !important; }
+
+.mk-admin-stat.panel-info { border-color: #b8d4f0 !important; background: linear-gradient(160deg, #f0f7ff 0%, #dfedfb 100%) !important; }
+.mk-admin-stat.panel-info .fa-2x { color: #2a6cb8; background: #c3ddf5; }
+.mk-admin-stat.panel-info h3 { color: #235ea0 !important; }
+
+.mk-admin-stat.panel-warning { border-color: #f0dcb0 !important; background: linear-gradient(160deg, #fffbf0 0%, #fdf3de 100%) !important; }
+.mk-admin-stat.panel-warning .fa-2x { color: #b87d1a; background: #f5e4b8; }
+.mk-admin-stat.panel-warning h3 { color: #9e6a10 !important; }
+
+.mk-admin-stat.panel-primary { border-color: #c4d6f0 !important; background: linear-gradient(160deg, #f2f6ff 0%, #e4ecfa 100%) !important; }
+.mk-admin-stat.panel-primary .fa-2x { color: #3060a8; background: #c8d8f2; }
+
+/* Colored card headings for panels */
+.mk-admin-body .panel-default > .panel-heading { background: linear-gradient(160deg, #f9fbf8 0%, #f0f5ed 100%) !important; border-bottom: 1px solid var(--mk-line) !important; }
+.mk-admin-body .panel-default > .panel-heading .fa { color: var(--mk-brand); }
+.mk-admin-body .panel-success > .panel-heading { background: linear-gradient(160deg, #edfaf2 0%, #dbf2e3 100%) !important; border-bottom: 1px solid #bce6cc !important; }
+.mk-admin-body .panel-success > .panel-heading .fa { color: #22814a; }
+.mk-admin-body .panel-info > .panel-heading { background: linear-gradient(160deg, #eff6ff 0%, #dbeaf9 100%) !important; border-bottom: 1px solid #b5d0ed !important; }
+.mk-admin-body .panel-info > .panel-heading .fa { color: #2a6cb8; }
+.mk-admin-body .panel-warning > .panel-heading { background: linear-gradient(160deg, #fffcf2 0%, #faf0d8 100%) !important; border-bottom: 1px solid #ecd8a4 !important; }
+.mk-admin-body .panel-warning > .panel-heading .fa { color: #b87d1a; }
+
 /* Reseller administration, aligned with the reseller portal */
 .mk-admin-list-panel { border-radius: 22px !important; }
 .mk-admin-list-panel .panel-heading { min-height: 66px; }
@@ -391,6 +430,25 @@ body.mk-admin-body select { font: inherit; }
 .mk-session-select { min-height: 114px !important; }
 .mk-form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 9px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--mk-line); }
 
+/* Action button group in tables */
+.mk-action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.mk-action-group .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: auto !important;
+  min-height: 34px;
+  padding: 6px 12px !important;
+  font-size: 11px !important;
+  white-space: nowrap;
+}
+.mk-action-cell { min-width: 200px; }
+
 /* Admin login */
 body.mk-admin-login { display: grid; place-items: center; padding: 22px; }
 .mk-login-shell { width: min(100%, 1020px); min-height: 610px; display: grid; grid-template-columns: 1.05fr .95fr; overflow: hidden; border: 1px solid var(--mk-line); border-radius: 30px; background: #fff; box-shadow: 0 30px 90px rgba(16,43,30,.14); }
@@ -419,8 +477,6 @@ body.mk-admin-login { display: grid; place-items: center; padding: 22px; }
 
 @media (max-width: 900px) {
   body.mk-admin-body .navbar { width: 100vw !important; max-width: 100vw; padding: 0 10px; }
-  body.mk-admin-body #openNav,
-  body.mk-admin-body #closeNav { display: none !important; }
   body.mk-admin-body #brand { min-width: auto; font-size: 0; }
   body.mk-admin-body #brand::before { margin-right: 0; }
   body.mk-admin-body #cpage { max-width: 34vw; padding-left: 7px; }
@@ -485,6 +541,8 @@ body.mk-admin-login { display: grid; place-items: center; padding: 22px; }
   .mk-card-table tfoot { display: block; }
   .mk-card-table tfoot tr,
   .mk-card-table tfoot td { display: block; width: 100%; }
+  .mk-action-group { justify-content: flex-start; }
+  .mk-action-group .btn { flex: 1 0 auto; justify-content: center; }
   .mk-login-shell { min-height: 0; border-radius: 22px; }
   .mk-login-hero { min-height: 225px; padding: 27px; }
   .mk-login-copy h1 { font-size: 37px; }

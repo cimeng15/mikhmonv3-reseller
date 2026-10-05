@@ -245,14 +245,12 @@ if($idleto != "disable"){
 <?php 
 } ?>  
   <a href="./admin.php?id=sessions" class="menu <?= $ssesslist; ?>"><i class="fa fa-gear"></i> <?= $_admin_settings ?></a>
-  <div class="dropdown-btn <?= $sresellers; ?>"><i class="fa fa-users"></i> Reseller
-    <i class="fa fa-caret-down"></i>
-  </div>
-  <div class="dropdown-container <?= $rslmenu; ?>">
-    <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"> <i class="fa fa-list"></i> Kelola Reseller</a>
-    <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"> <i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
-    <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"> <i class="fa fa-bar-chart"></i> Laporan</a>
-  </div>
+  <div class="menu spa"></div>
+  <div class="mk-sidebar-group-label"><i class="fa fa-users"></i> Reseller</div>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-list"></i> Kelola Reseller</a>
+  <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"><i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
+  <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"><i class="fa fa-bar-chart"></i> Laporan</a>
+  <div class="menu spa"></div>
   <a href="./admin.php?id=settings&router=new-<?= rand(1111,9999) ?>" class="menu <?= $snsettings ?>"><i class="fa fa-plus"></i> <?= $_add_router ?></a>
   <a href="./admin.php?id=about" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
 
@@ -387,17 +385,17 @@ include('./info.php');
   <div class="dropdown-container <?= $settmenu; ?>">
   <a href="./admin.php?id=settings&session=<?= $session; ?>" class="menu "> <i class="fa fa-gear "></i> <?= $_session_settings ?> </a>
   <a href="./admin.php?id=sessions" class="menu "> <i class="fa fa-gear "></i> <?= $_admin_settings ?> </a>
-  <div class="dropdown-btn"><i class="fa fa-users"></i> Reseller
-    <i class="fa fa-caret-down"></i>
-  </div>
-  <div class="dropdown-container">
-    <a href="./admin.php?id=resellers" class="menu"> <i class="fa fa-list"></i> Kelola Reseller</a>
-    <a href="./admin.php?id=reseller-deposits" class="menu"> <i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
-    <a href="./admin.php?id=reseller-reports" class="menu"> <i class="fa fa-bar-chart"></i> Laporan</a>
-  </div>
   <a href="./?hotspot=uplogo&session=<?= $session; ?>" class="menu <?= $uplogo; ?>"> <i class="fa fa-upload "></i> <?= $_upload_logo ?> </a>
   <a href="./?hotspot=template-editor&template=default&session=<?= $session; ?>" class="menu <?= $teditor; ?>"> <i class="fa fa-edit "></i> <?= $_template_editor ?> </a>          
   </div>
+  </div>
+  <!--reseller-->
+  <div class="menu spa"></div>
+  <div class="mk-sidebar-group-label"><i class="fa fa-users"></i> Reseller</div>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-list"></i> Kelola Reseller</a>
+  <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"><i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
+  <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"><i class="fa fa-bar-chart"></i> Laporan</a>
+  <div class="menu spa"></div>
   <!--about-->
   <a href="./?hotspot=about&session=<?= $session; ?>" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
 

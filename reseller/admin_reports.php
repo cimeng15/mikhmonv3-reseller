@@ -24,7 +24,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
 <div class="row">
     <div class="col-md-3">
         <div class="panel panel-primary mk-admin-stat">
-            <div class="panel-body text-center">
+            <div class="panel-body">
                 <i class="fa fa-users fa-2x"></i>
                 <h4>Total Reseller</h4>
                 <h2><?=count($resellers)?></h2>
@@ -34,7 +34,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
     </div>
     <div class="col-md-3">
         <div class="panel panel-success mk-admin-stat">
-            <div class="panel-body text-center">
+            <div class="panel-body">
                 <i class="fa fa-money fa-2x"></i>
                 <h4>Total Saldo</h4>
                 <h2>Rp <?=number_format($totalBalance, 0, ',', '.')?></h2>
@@ -44,7 +44,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
     </div>
     <div class="col-md-3">
         <div class="panel panel-info mk-admin-stat">
-            <div class="panel-body text-center">
+            <div class="panel-body">
                 <i class="fa fa-shopping-cart fa-2x"></i>
                 <h4>Penjualan Hari Ini</h4>
                 <h2>Rp <?=number_format($summaryToday['purchase'], 0, ',', '.')?></h2>
@@ -54,7 +54,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
     </div>
     <div class="col-md-3">
         <div class="panel panel-warning mk-admin-stat">
-            <div class="panel-body text-center">
+            <div class="panel-body">
                 <i class="fa fa-calendar fa-2x"></i>
                 <h4>Penjualan Bulan Ini</h4>
                 <h2>Rp <?=number_format($summaryMonth['purchase'], 0, ',', '.')?></h2>

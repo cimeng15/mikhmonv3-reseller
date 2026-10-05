@@ -31,27 +31,31 @@ $summary = getTransactionSummary($filter_reseller ?: null);
 <div class="row">
     <div class="col-md-4">
         <div class="panel panel-success mk-admin-stat">
-            <div class="panel-body text-center">
-                <h4><i class="fa fa-arrow-down text-success"></i> Total Deposit</h4>
-                <h3 class="text-success">Rp <?=number_format($summary['deposit'], 0, ',', '.')?></h3>
+            <div class="panel-body">
+                <i class="fa fa-arrow-down fa-2x"></i>
+                <h4>Total Deposit</h4>
+                <h2 class="text-success">Rp <?=number_format($summary['deposit'], 0, ',', '.')?></h2>
                 <small><?=$summary['deposit_count']?> transaksi</small>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="panel panel-info mk-admin-stat">
-            <div class="panel-body text-center">
-                <h4><i class="fa fa-shopping-cart text-info"></i> Total Pembelian</h4>
-                <h3 class="text-info">Rp <?=number_format($summary['purchase'], 0, ',', '.')?></h3>
+            <div class="panel-body">
+                <i class="fa fa-shopping-cart fa-2x"></i>
+                <h4>Total Pembelian</h4>
+                <h2 class="text-info">Rp <?=number_format($summary['purchase'], 0, ',', '.')?></h2>
                 <small><?=$summary['purchase_count']?> transaksi</small>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="panel panel-warning mk-admin-stat">
-            <div class="panel-body text-center">
-                <h4><i class="fa fa-refresh text-warning"></i> Total Refund</h4>
-                <h3 class="text-warning">Rp <?=number_format($summary['refund'], 0, ',', '.')?></h3>
+            <div class="panel-body">
+                <i class="fa fa-refresh fa-2x"></i>
+                <h4>Total Refund</h4>
+                <h2 class="text-warning">Rp <?=number_format($summary['refund'], 0, ',', '.')?></h2>
+                <small>pengembalian saldo</small>
             </div>
         </div>
     </div>
@@ -81,7 +85,7 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                         <label>Keterangan:</label>
                         <input type="text" name="description" class="form-control" placeholder="Transfer bank atau tunai" style="width:200px">
                     </div>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Deposit</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Tambah Deposit</button>
                 </form>
             </div>
         </div>
@@ -121,8 +125,8 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                     <div class="form-group">
                         <input type="date" name="date_to" class="form-control" value="<?=htmlspecialchars($filter_to)?>" placeholder="Sampai">
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filter</button>
-                    <a href="?id=reseller-deposits" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
+                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
+                    <a href="?id=reseller-deposits" class="btn btn-default"><i class="fa fa-times"></i> Reset</a>
                 </form>
 
                 <div class="table-responsive">

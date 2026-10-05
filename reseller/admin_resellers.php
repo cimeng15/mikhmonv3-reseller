@@ -69,19 +69,27 @@ $resellers = getAllResellers();
                                         <span class="label label-danger">Nonaktif</span>
                                     <?php endif; ?>
                                 </td>
-                                <td data-label="Aksi" class="text-center">
-                                        <button class="btn btn-info btn-deposit" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Deposit">
-                                            <i class="fa fa-money"></i>
+                                <td data-label="Aksi" class="mk-action-cell">
+                                    <div class="mk-action-group">
+                                        <button class="btn btn-success btn-xs btn-deposit" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Tambah saldo">
+                                            <i class="fa fa-plus-circle"></i> <span>Deposit</span>
                                         </button>
-                                        <button class="btn btn-warning btn-edit" data-id="<?=$r['id']?>" title="Edit">
-                                            <i class="fa fa-pencil"></i>
+                                        <button class="btn btn-info btn-xs btn-edit" data-id="<?=$r['id']?>" title="Ubah data reseller">
+                                            <i class="fa fa-pencil"></i> <span>Edit</span>
                                         </button>
-                                        <button class="btn btn-default btn-toggle" data-id="<?=$r['id']?>" title="Ubah status">
-                                            <i class="fa fa-power-off"></i>
+                                        <?php if($r['status'] === 'active'): ?>
+                                        <button class="btn btn-warning btn-xs btn-toggle" data-id="<?=$r['id']?>" title="Nonaktifkan reseller">
+                                            <i class="fa fa-ban"></i> <span>Nonaktifkan</span>
                                         </button>
-                                        <button class="btn btn-danger btn-delete" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Hapus">
-                                            <i class="fa fa-trash"></i>
+                                        <?php else: ?>
+                                        <button class="btn btn-primary btn-xs btn-toggle" data-id="<?=$r['id']?>" title="Aktifkan reseller">
+                                            <i class="fa fa-check-circle"></i> <span>Aktifkan</span>
                                         </button>
+                                        <?php endif; ?>
+                                        <button class="btn btn-danger btn-xs btn-delete" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Hapus reseller">
+                                            <i class="fa fa-trash"></i> <span>Hapus</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
