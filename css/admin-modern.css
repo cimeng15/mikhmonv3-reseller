@@ -602,11 +602,7 @@ body.mk-admin-login { display: grid; place-items: center; padding: 22px; }
   .mk-admin-body .main-container { max-width: none; padding: 0; }
 }
 
-/* ===== Hotspot / Router pages (index.php) ===== */
-/* These pages use the legacy sidebar JS (open/close toggle).
-   We only restyle the visuals — we do NOT override display or width
-   so the legacy mikhmon-ui.*.min.js can keep controlling the sidebar. */
-
+/* ===== Hotspot / Router pages (index.php) — bottom navigation ===== */
 body.mk-hotspot-body a { text-decoration: none; }
 body.mk-hotspot-body button,
 body.mk-hotspot-body input,
@@ -748,13 +744,21 @@ body.mk-hotspot-body select { font: inherit; }
 .mk-hotspot-body .sidenav .card-header h3 { margin: 0; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .mk-hotspot-body .sidenav .spa { min-height: 1px; margin: 10px 4px; padding: 0; border-bottom: 1px solid rgba(255,255,255,.1); border-radius: 0; }
 
-/* Main content */
+/* Legacy sidebar is not used in router dashboard */
+.mk-hotspot-body .sidenav { display: none !important; }
+.mk-hotspot-body #openNav,
+.mk-hotspot-body #closeNav { display: none !important; }
+
+/* Main content — full width with bottom navigation */
 .mk-hotspot-body #main {
   min-width: 0;
   min-height: 100vh;
+  width: 100% !important;
+  margin-left: 0 !important;
   padding-top: var(--mk-topbar);
+  padding-bottom: 98px;
   background: var(--mk-bg);
-  transition: margin .24s ease;
+  transition: none;
 }
 .mk-hotspot-body .main-container {
   width: 100%;
@@ -828,6 +832,111 @@ body.mk-hotspot-body select { font: inherit; }
 .mk-hotspot-body .modal-content { overflow: hidden; color: var(--mk-ink); border: 0; border-radius: 20px; box-shadow: 0 30px 90px rgba(16,43,30,.25); }
 .mk-hotspot-body #notify { z-index: 2000; border-radius: 12px; }
 
+/* Floating bottom navigation */
+.mk-router-bottom-nav {
+  position: fixed;
+  inset: auto 50% 16px auto;
+  z-index: 1200;
+  width: min(760px, calc(100vw - 28px));
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(207, 220, 203, .92);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 18px 55px rgba(16, 43, 30, .18);
+  backdrop-filter: blur(18px);
+  transform: translateX(50%);
+}
+.mk-router-bottom-nav a,
+.mk-router-bottom-nav button {
+  min-width: 0;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 5px;
+  color: var(--mk-muted);
+  border: 0;
+  border-radius: 15px;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.15;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, transform .18s ease;
+}
+.mk-router-bottom-nav a:hover,
+.mk-router-bottom-nav button:hover { color: var(--mk-brand-dark); background: var(--mk-soft); transform: translateY(-2px); }
+.mk-router-bottom-nav a.active { color: var(--mk-brand-dark); background: var(--mk-accent); }
+.mk-router-bottom-nav .fa { font-size: 18px; }
+.mk-router-bottom-nav a:nth-child(3) {
+  color: var(--mk-brand-dark);
+  background: #daf9c6;
+}
+
+/* More-menu sheet */
+.mk-router-more-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1240;
+  visibility: hidden;
+  background: rgba(7, 22, 14, .48);
+  opacity: 0;
+  backdrop-filter: blur(3px);
+  transition: opacity .22s ease, visibility .22s ease;
+}
+.mk-router-more-backdrop.open { visibility: visible; opacity: 1; }
+.mk-router-more-panel {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 1250;
+  width: min(620px, calc(100vw - 20px));
+  max-height: min(72vh, 600px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--mk-line);
+  border-radius: 26px 26px 0 0;
+  background: #fff;
+  box-shadow: 0 -22px 70px rgba(11, 34, 21, .22);
+  transform: translate(-50%, 105%);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1);
+}
+.mk-router-more-panel.open { transform: translate(-50%, 0); }
+.mk-router-more-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+.mk-router-more-head strong { display: block; color: var(--mk-ink); font-size: 20px; letter-spacing: -.035em; }
+.mk-router-more-head small { display: block; margin-top: 3px; color: var(--mk-muted); }
+.mk-router-more-head button {
+  width: 42px; height: 42px; display: grid; place-items: center;
+  color: var(--mk-muted); border: 0; border-radius: 13px;
+  background: var(--mk-soft); cursor: pointer;
+}
+.mk-router-more-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; }
+.mk-router-more-grid a {
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 7px;
+  color: var(--mk-ink);
+  border: 1px solid var(--mk-line);
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fff, #f4f8f1);
+  font-size: 10px;
+  font-weight: 750;
+  text-align: center;
+}
+.mk-router-more-grid a:hover { border-color: #b9d8a8; background: #edf8e7; transform: translateY(-2px); }
+.mk-router-more-grid .fa { width: 38px; height: 38px; display: grid; place-items: center; color: var(--mk-brand-dark); border-radius: 12px; background: var(--mk-accent); font-size: 17px; }
+body.mk-router-menu-open { overflow: hidden; }
+
 @media (max-width: 900px) {
   .mk-hotspot-body .navbar { width: 100vw !important; max-width: 100vw; padding: 0 10px; }
   .mk-hotspot-body #brand { min-width: auto; font-size: 0; }
@@ -841,9 +950,11 @@ body.mk-hotspot-body select { font: inherit; }
 }
 
 @media (max-width: 620px) {
-  .mk-hotspot-body #cpage { max-width: 28vw; font-size: 11px; }
+  .mk-hotspot-body #cpage { max-width: 36vw; font-size: 11px; }
+  .mk-hotspot-body #brand { display: none !important; }
   .mk-hotspot-body #logout { width: 40px; padding: 0; font-size: 0; }
   .mk-hotspot-body #logout .fa { margin: 0 !important; font-size: 16px; }
+  .mk-hotspot-body .navbar-right .connect { max-width: 125px; }
   .mk-hotspot-body .main-container { padding: 15px 11px 42px; }
   .mk-hotspot-body .card-header,
   .mk-hotspot-body .panel-heading,
@@ -852,4 +963,20 @@ body.mk-hotspot-body select { font: inherit; }
   .mk-hotspot-body .btn { width: 100%; }
   .mk-hotspot-body .panel-heading .btn,
   .mk-hotspot-body .card-header .btn { width: auto; }
+  .mk-router-bottom-nav {
+    inset: auto 7px 7px 7px;
+    width: auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    padding: 6px;
+    border-radius: 19px;
+    transform: none;
+  }
+  .mk-router-bottom-nav a,
+  .mk-router-bottom-nav button { min-height: 55px; padding: 6px 2px; font-size: 8px; }
+  .mk-router-bottom-nav .fa { font-size: 17px; }
+  .mk-router-bottom-nav a:nth-child(5) { display: none; }
+  .mk-router-more-panel { width: calc(100vw - 12px); padding: 18px 14px 22px; border-radius: 22px 22px 0 0; }
+  .mk-router-more-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .mk-router-more-grid a { min-height: 78px; }
 }

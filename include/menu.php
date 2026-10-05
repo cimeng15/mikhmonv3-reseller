@@ -394,6 +394,36 @@ include('./info.php');
   <a href="./?hotspot=about&session=<?= $session; ?>" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
 
 </div>
+
+<!-- Bottom navigation for connected router dashboard -->
+<nav class="mk-router-bottom-nav" aria-label="Navigasi router">
+  <a href="./?session=<?= $session; ?>" class="<?= $shome; ?>"><i class="fa fa-dashboard"></i><span>Ringkasan</span></a>
+  <a href="./?hotspot=users&profile=all&session=<?= $session; ?>" class="<?= $susers; ?>"><i class="fa fa-users"></i><span>Pengguna</span></a>
+  <a href="./?hotspot-user=generate&session=<?= $session; ?>" class="<?= $sgenuser; ?>"><i class="fa fa-ticket"></i><span>Buat Voucher</span></a>
+  <a href="./?hotspot=users-by-profile&session=<?= $session; ?>" class="<?= $susersbp; ?>"><i class="fa fa-list-alt"></i><span>Voucher</span></a>
+  <a href="./?report=selling&idbl=<?= strtolower(date("M")) . date("Y"); ?>&session=<?= $session; ?>" class="<?= $sselling; ?>"><i class="fa fa-bar-chart"></i><span>Laporan</span></a>
+  <button type="button" id="routerMoreMenu" aria-label="Menu lainnya" aria-expanded="false"><i class="fa fa-th-large"></i><span>Lainnya</span></button>
+</nav>
+<div id="routerMorePanel" class="mk-router-more-panel" aria-hidden="true">
+  <div class="mk-router-more-head">
+    <div><strong>Menu lainnya</strong><small><?=htmlspecialchars($identity)?></small></div>
+    <button type="button" id="routerMoreClose" aria-label="Tutup menu"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="mk-router-more-grid">
+    <a href="./?hotspot=active&session=<?= $session; ?>"><i class="fa fa-wifi"></i><span>Hotspot Aktif</span></a>
+    <a href="./?hotspot=user-profiles&session=<?= $session; ?>"><i class="fa fa-pie-chart"></i><span>Profil User</span></a>
+    <a href="./?hotspot=quick-print&session=<?= $session; ?>"><i class="fa fa-print"></i><span>Cetak Cepat</span></a>
+    <a href="./?hotspot=hosts&session=<?= $session; ?>"><i class="fa fa-laptop"></i><span>Hosts</span></a>
+    <a href="./?hotspot=ipbinding&session=<?= $session; ?>"><i class="fa fa-address-book"></i><span>IP Binding</span></a>
+    <a href="./?hotspot=dhcp-leases&session=<?= $session; ?>"><i class="fa fa-sitemap"></i><span>DHCP Lease</span></a>
+    <a href="./?interface=traffic-monitor&session=<?= $session; ?>"><i class="fa fa-area-chart"></i><span>Traffic</span></a>
+    <a href="./?hotspot=log&session=<?= $session; ?>"><i class="fa fa-align-justify"></i><span>Log</span></a>
+    <a href="./admin.php?id=settings&session=<?= $session; ?>"><i class="fa fa-gear"></i><span>Pengaturan</span></a>
+    <a href="./admin.php?id=resellers"><i class="fa fa-user-circle"></i><span>Reseller</span></a>
+  </div>
+</div>
+<div id="routerMoreBackdrop" class="mk-router-more-backdrop"></div>
+
 <script>
 $(document).ready(function(){
   $(".connect").change(function(){
@@ -404,6 +434,24 @@ $(document).ready(function(){
     notify("<?= $_loading_theme ?>");
     stheme(this.value)
   });
+
+  var morePanel = document.getElementById('routerMorePanel');
+  var moreBackdrop = document.getElementById('routerMoreBackdrop');
+  var moreButton = document.getElementById('routerMoreMenu');
+  var moreClose = document.getElementById('routerMoreClose');
+
+  function setMoreMenu(show) {
+    if (!morePanel || !moreBackdrop) return;
+    morePanel.classList.toggle('open', show);
+    moreBackdrop.classList.toggle('open', show);
+    morePanel.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (moreButton) moreButton.setAttribute('aria-expanded', show ? 'true' : 'false');
+    document.body.classList.toggle('mk-router-menu-open', show);
+  }
+  if (moreButton) moreButton.addEventListener('click', function(){ setMoreMenu(true); });
+  if (moreClose) moreClose.addEventListener('click', function(){ setMoreMenu(false); });
+  if (moreBackdrop) moreBackdrop.addEventListener('click', function(){ setMoreMenu(false); });
+  document.addEventListener('keydown', function(event){ if (event.key === 'Escape') setMoreMenu(false); });
 });
 </script>
 <div id="notify"><div class="message"></div></div>
