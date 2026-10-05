@@ -22,7 +22,7 @@ if (isset($_POST['reseller_login'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     if (resellerLogin($username, $password)) {
-        header('Location: index.php');
+        header('Location: ' . $resellerBaseUrl . 'index.php');
         exit;
     } else {
         $loginError = 'Username atau password salah';
@@ -32,7 +32,7 @@ if (isset($_POST['reseller_login'])) {
 // Handle Logout
 if (isset($_GET['logout'])) {
     resellerLogout();
-    header('Location: index.php');
+    header('Location: ' . $resellerBaseUrl . 'index.php');
     exit;
 }
 
@@ -80,7 +80,7 @@ if (!isResellerLoggedIn()) {
                 <?php if(isset($loginError)): ?>
                 <div class="alert alert-danger"><i class="fa fa-warning"></i> <?=htmlspecialchars($loginError)?></div>
                 <?php endif; ?>
-                <form method="POST" autocomplete="on">
+                <form method="POST" action="<?=htmlspecialchars($resellerBaseUrl . 'index.php', ENT_QUOTES, 'UTF-8')?>" autocomplete="on">
                     <div class="rs-field">
                         <label for="resellerUsername">Username</label>
                         <div class="rs-input-wrap">
@@ -113,7 +113,7 @@ if (!isResellerLoggedIn()) {
 $reseller = getCurrentReseller();
 if (!$reseller) {
     resellerLogout();
-    header('Location: index.php');
+    header('Location: ' . $resellerBaseUrl . 'index.php');
     exit;
 }
 
