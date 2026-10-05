@@ -36,12 +36,26 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
+// Resolve portal theme from the saved Mikhmon theme, while allowing
+// the reseller to override it for the current browser session.
+$availableResellerThemes = ['light', 'dark'];
+if (isset($_GET['theme']) && in_array($_GET['theme'], $availableResellerThemes, true)) {
+    $_SESSION['reseller_theme'] = $_GET['theme'];
+    $redirectParams = $_GET;
+    unset($redirectParams['theme']);
+    $cleanThemeUrl = $resellerBaseUrl . 'index.php' . ($redirectParams ? '?' . http_build_query($redirectParams) : '');
+    header('Location: ' . $cleanThemeUrl);
+    exit;
+}
+$globalTheme = 'light';
+$globalThemeFile = __DIR__ . '/../include/theme.php';
+if (is_file($globalThemeFile)) {
+    include $globalThemeFile;
+}
+$theme = $_SESSION['reseller_theme'] ?? (($theme ?? $globalTheme) === 'dark' ? 'dark' : 'light');
+
 // Show login if not authenticated
 if (!isResellerLoggedIn()) {
-    $theme = 'dark';
-    if (file_exists(__DIR__ . '/include/theme.php')) {
-        include __DIR__ . '/include/theme.php';
-    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,7 +69,7 @@ if (!isResellerLoggedIn()) {
     <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css?v=<?=filemtime(__DIR__ . '/assets/css/font-awesome/font-awesome.min.css')?>">
     <link rel="stylesheet" href="assets/css/reseller-modern.css?v=<?=filemtime(__DIR__ . '/assets/css/reseller-modern.css')?>">
 </head>
-<body class="rs-login-body">
+<body class="rs-login-body rs-theme-<?=htmlspecialchars($theme)?>">
     <main class="rs-login-shell">
         <section class="rs-login-hero">
             <a class="rs-login-brand" href="index.php">
@@ -118,10 +132,6 @@ if (!$reseller) {
 }
 
 $page = $_GET['page'] ?? 'dashboard';
-$theme = 'dark';
-if (file_exists(__DIR__ . '/include/theme.php')) {
-    include __DIR__ . '/include/theme.php';
-}
 
 // Get allowed sessions
 $allowedSessions = getAllowedSessions($reseller['id']);
@@ -149,7 +159,7 @@ if (isset($data) && is_array($data)) {
     <link rel="stylesheet" href="assets/css/reseller-modern.css?v=<?=filemtime(__DIR__ . '/assets/css/reseller-modern.css')?>">
     <script src="assets/js/jquery.min.js"></script>
 </head>
-<body class="rs-body">
+<body class="rs-body rs-theme-<?=htmlspecialchars($theme)?>">
 <div id="resellerApp" class="rs-app">
     <aside class="rs-sidebar no-print" aria-label="Navigasi utama">
         <a class="rs-brand" href="index.php">
@@ -179,6 +189,9 @@ if (isset($data) && is_array($data)) {
                 <span><?=date('l, d F Y')?></span>
             </div>
             <div class="rs-top-actions">
+                <a class="rs-theme-toggle" href="index.php?page=<?=urlencode($page)?>&amp;theme=<?=$theme === 'dark' ? 'light' : 'dark'?>" title="Gunakan mode <?=$theme === 'dark' ? 'terang' : 'gelap'?>" aria-label="Gunakan mode <?=$theme === 'dark' ? 'terang' : 'gelap'?>">
+                    <i class="fa <?=$theme === 'dark' ? 'fa-sun-o' : 'fa-moon-o'?>"></i>
+                </a>
                 <div class="rs-balance-pill">
                     <i class="fa fa-money"></i>
                     <span><small>Saldo tersedia</small><strong>Rp <?=number_format($reseller['balance'], 0, ',', '.')?></strong></span>

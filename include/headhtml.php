@@ -47,13 +47,11 @@ error_reporting(0);
 		
 	</head>
 	<body class="<?php
-if (!isset($_SESSION['mikhmon'])) {
-	echo 'mk-admin-login';
-} elseif (basename($_SERVER['SCRIPT_FILENAME']) === 'admin.php') {
-	echo 'mk-admin-body';
-} else {
-	echo 'mk-hotspot-body';
-}
+$pageBodyClass = !isset($_SESSION['mikhmon'])
+	? 'mk-admin-login'
+	: (basename($_SERVER['SCRIPT_FILENAME']) === 'admin.php' ? 'mk-admin-body' : 'mk-hotspot-body');
+$safeTheme = preg_replace('/[^a-z0-9_-]/i', '', (string)($theme ?? 'light'));
+echo $pageBodyClass . ' mk-theme-' . ($safeTheme ?: 'light');
 ?>">
 		<div class="wrapper">
 
