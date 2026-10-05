@@ -15,11 +15,8 @@ $transactions = getTransactions($reseller['id'], $filters);
 $summary = getTransactionSummary($reseller['id']);
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <h3><i class="fa fa-history"></i> Riwayat Transaksi</h3>
-        <hr>
-    </div>
+<div class="rs-page-head">
+    <div><h1>Riwayat transaksi</h1><p>Rincian deposit, pembelian voucher, dan refund akun Anda.</p></div>
 </div>
 
 <div class="row">
@@ -76,7 +73,7 @@ $summary = getTransactionSummary($reseller['id']);
         </form>
 
         <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover">
+            <table class="table table-striped table-hover rs-card-table">
                 <thead>
                     <tr>
                         <th>Tanggal</th>
@@ -95,8 +92,8 @@ $summary = getTransactionSummary($reseller['id']);
                 <?php else: ?>
                     <?php foreach($transactions as $t): ?>
                     <tr>
-                        <td><?=date('d/m/Y H:i', strtotime($t['created_at']))?></td>
-                        <td>
+                        <td data-label="Tanggal"><?=date('d/m/Y H:i', strtotime($t['created_at']))?></td>
+                        <td data-label="Tipe">
                             <?php if($t['type']=='deposit'): ?>
                                 <span class="label label-success"><i class="fa fa-arrow-down"></i> Deposit</span>
                             <?php elseif($t['type']=='purchase'): ?>
@@ -105,12 +102,12 @@ $summary = getTransactionSummary($reseller['id']);
                                 <span class="label label-warning"><i class="fa fa-refresh"></i> Refund</span>
                             <?php endif; ?>
                         </td>
-                        <td class="text-right">Rp <?=number_format($t['amount'], 0, ',', '.')?></td>
-                        <td class="text-right">Rp <?=number_format($t['balance_before'], 0, ',', '.')?></td>
-                        <td class="text-right">Rp <?=number_format($t['balance_after'], 0, ',', '.')?></td>
-                        <td><?=htmlspecialchars($t['session_name'] ?? '-')?></td>
-                        <td><?=htmlspecialchars($t['description'])?></td>
-                        <td>
+                        <td data-label="Jumlah" class="text-right">Rp <?=number_format($t['amount'], 0, ',', '.')?></td>
+                        <td data-label="Saldo sebelum" class="text-right">Rp <?=number_format($t['balance_before'], 0, ',', '.')?></td>
+                        <td data-label="Saldo sesudah" class="text-right">Rp <?=number_format($t['balance_after'], 0, ',', '.')?></td>
+                        <td data-label="Router"><?=htmlspecialchars($t['session_name'] ?? '-')?></td>
+                        <td data-label="Keterangan"><?=htmlspecialchars($t['description'])?></td>
+                        <td data-label="Aksi">
                             <?php if($t['type']=='purchase' && !empty($t['voucher_data'])): ?>
                             <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default" target="_blank">
                                 <i class="fa fa-print"></i> Print

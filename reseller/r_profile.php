@@ -37,11 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
 $logs = getResellerLogs($reseller['id'], 30);
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <h3><i class="fa fa-user"></i> Profil Saya</h3>
-        <hr>
-    </div>
+<div class="rs-page-head">
+    <div><h1>Profil saya</h1><p>Informasi akun, keamanan, dan riwayat aktivitas reseller.</p></div>
 </div>
 
 <div class="row">
@@ -114,17 +111,17 @@ $logs = getResellerLogs($reseller['id'], 30);
             <div class="panel-heading"><h4><i class="fa fa-clock-o"></i> Riwayat Aktivitas</h4></div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-striped rs-card-table">
                         <thead>
                             <tr><th>Waktu</th><th>Aksi</th><th>Detail</th><th>IP</th></tr>
                         </thead>
                         <tbody>
                         <?php foreach($logs as $log): ?>
                             <tr>
-                                <td><?=date('d/m/Y H:i:s', strtotime($log['created_at']))?></td>
-                                <td><span class="label label-default"><?=htmlspecialchars($log['action'])?></span></td>
-                                <td><?=htmlspecialchars($log['detail'])?></td>
-                                <td><small><?=htmlspecialchars($log['ip_address'])?></small></td>
+                                <td data-label="Waktu"><?=date('d/m/Y H:i:s', strtotime($log['created_at']))?></td>
+                                <td data-label="Aksi"><span class="label label-default"><?=htmlspecialchars($log['action'])?></span></td>
+                                <td data-label="Detail"><?=htmlspecialchars($log['detail'])?></td>
+                                <td data-label="IP"><small><?=htmlspecialchars($log['ip_address'])?></small></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>

@@ -46,43 +46,57 @@ if (!isResellerLoggedIn()) {
     <title>Mikhmon Reseller Panel</title>
     <link rel="icon" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome/css/font-awesome.min.css">
-    <style>
-        .login-box { max-width: 400px; margin: 80px auto; }
-        .login-logo { text-align: center; margin-bottom: 20px; }
-        .login-logo img { width: 80px; }
-    </style>
+    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/reseller-modern.css">
 </head>
-<body>
-    <div class="container">
-        <div class="login-box">
-            <div class="login-logo">
+<body class="rs-login-body">
+    <main class="rs-login-shell">
+        <section class="rs-login-hero">
+            <a class="rs-login-brand" href="index.php">
                 <img src="assets/img/logo.png" alt="Mikhmon">
-                <h3>Reseller Panel</h3>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <?php if(isset($loginError)): ?>
-                    <div class="alert alert-danger"><i class="fa fa-warning"></i> <?=$loginError?></div>
-                    <?php endif; ?>
-                    <form method="POST">
-                        <div class="form-group">
-                            <label><i class="fa fa-user"></i> Username</label>
-                            <input type="text" name="username" class="form-control" required autofocus>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fa fa-lock"></i> Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <button type="submit" name="reseller_login" class="btn btn-primary btn-block">
-                            <i class="fa fa-sign-in"></i> Login
-                        </button>
-                    </form>
+                <span>Mikhmon Reseller</span>
+            </a>
+            <div class="rs-login-copy">
+                <span class="rs-login-eyebrow"><i class="fa fa-wifi"></i> Hotspot business hub</span>
+                <h1>Voucher WiFi, lebih mudah.</h1>
+                <p>Kelola pembelian, cetak voucher, dan pantau transaksi dari satu panel yang cepat dan aman.</p>
+                <div class="rs-login-points">
+                    <span class="rs-login-point"><i class="fa fa-bolt"></i> Proses cepat</span>
+                    <span class="rs-login-point"><i class="fa fa-shield"></i> Data terpisah</span>
+                    <span class="rs-login-point"><i class="fa fa-mobile"></i> Mobile friendly</span>
                 </div>
             </div>
-            <p class="text-center text-muted"><small>Mikhmon V3 Reseller System</small></p>
-        </div>
-    </div>
+        </section>
+        <section class="rs-login-form-side">
+            <div class="rs-login-form">
+                <h2>Selamat datang</h2>
+                <p>Masuk dengan akun reseller Anda.</p>
+                <?php if(isset($loginError)): ?>
+                <div class="alert alert-danger"><i class="fa fa-warning"></i> <?=htmlspecialchars($loginError)?></div>
+                <?php endif; ?>
+                <form method="POST" autocomplete="on">
+                    <div class="rs-field">
+                        <label for="resellerUsername">Username</label>
+                        <div class="rs-input-wrap">
+                            <i class="fa fa-user"></i>
+                            <input id="resellerUsername" type="text" name="username" class="form-control" autocomplete="username" required autofocus placeholder="Masukkan username">
+                        </div>
+                    </div>
+                    <div class="rs-field">
+                        <label for="resellerPassword">Password</label>
+                        <div class="rs-input-wrap">
+                            <i class="fa fa-lock"></i>
+                            <input id="resellerPassword" type="password" name="password" class="form-control" autocomplete="current-password" required placeholder="Masukkan password">
+                        </div>
+                    </div>
+                    <button type="submit" name="reseller_login" class="btn btn-primary btn-lg btn-block">
+                        Masuk ke Panel <i class="fa fa-arrow-right"></i>
+                    </button>
+                </form>
+                <div class="rs-login-foot"><i class="fa fa-lock"></i> Akses khusus reseller terdaftar</div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
 <?php
@@ -124,66 +138,48 @@ if (isset($data) && is_array($data)) {
     <title>Mikhmon Reseller - <?=htmlspecialchars($reseller['name'])?></title>
     <link rel="icon" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/reseller-modern.css">
     <script src="assets/js/jquery.min.js"></script>
-    <style>
-        .reseller-nav { margin-bottom: 20px; }
-        .balance-display {
-            font-size: 24px; font-weight: bold;
-            padding: 8px 15px; border-radius: 4px;
-            display: inline-block;
-        }
-        .stat-box { text-align: center; padding: 15px; }
-        .stat-box h2 { margin: 5px 0; }
-        @media print { .no-print { display: none !important; } }
-    </style>
 </head>
-<body>
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-default no-print">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resellerNav">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">
-                    <img src="assets/img/logo.png" style="height:20px;display:inline"> Mikhmon Reseller
-                </a>
-            </div>
-            <div class="collapse navbar-collapse" id="resellerNav">
-                <ul class="nav navbar-nav">
-                    <li class="<?=$page=='dashboard'?'active':''?>">
-                        <a href="index.php?page=dashboard"><i class="fa fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    <li class="<?=$page=='generate'?'active':''?>">
-                        <a href="index.php?page=generate"><i class="fa fa-ticket"></i> Beli Voucher</a>
-                    </li>
-                    <li class="<?=$page=='vouchers'?'active':''?>">
-                        <a href="index.php?page=vouchers"><i class="fa fa-list"></i> Voucher Saya</a>
-                    </li>
-                    <li class="<?=$page=='transactions'?'active':''?>">
-                        <a href="index.php?page=transactions"><i class="fa fa-history"></i> Transaksi</a>
-                    </li>
-                    <li class="<?=$page=='profile'?'active':''?>">
-                        <a href="index.php?page=profile"><i class="fa fa-user"></i> Profil</a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#" style="cursor:default">
-                            <i class="fa fa-money"></i>
-                            Saldo: <strong class="text-success">Rp <?=number_format($reseller['balance'], 0, ',', '.')?></strong>
-                        </a>
-                    </li>
-                    <li><a href="index.php?logout=1"><i class="fa fa-sign-out"></i> Logout</a></li>
-                </ul>
-            </div>
+<body class="rs-body">
+<div id="resellerApp" class="rs-app">
+    <aside class="rs-sidebar no-print" aria-label="Navigasi utama">
+        <a class="rs-brand" href="index.php">
+            <img src="assets/img/logo.png" alt="Mikhmon">
+            <span class="rs-brand-copy"><strong>Mikhmon</strong><small>Reseller panel</small></span>
+        </a>
+        <div class="rs-nav-label">Menu utama</div>
+        <ul class="rs-nav">
+            <li class="<?=$page=='dashboard'?'active':''?>"><a href="index.php?page=dashboard"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
+            <li class="<?=$page=='generate'?'active':''?>"><a href="index.php?page=generate"><i class="fa fa-plus-circle"></i><span>Beli Voucher</span></a></li>
+            <li class="<?=$page=='vouchers'?'active':''?>"><a href="index.php?page=vouchers"><i class="fa fa-ticket"></i><span>Voucher Saya</span></a></li>
+            <li class="<?=$page=='transactions'?'active':''?>"><a href="index.php?page=transactions"><i class="fa fa-exchange"></i><span>Transaksi</span></a></li>
+            <li class="<?=$page=='profile'?'active':''?>"><a href="index.php?page=profile"><i class="fa fa-user"></i><span>Profil</span></a></li>
+        </ul>
+        <div class="rs-sidebar-account">
+            <span class="name"><?=htmlspecialchars($reseller['name'])?></span>
+            <span class="role">@<?=htmlspecialchars($reseller['username'])?> · Reseller aktif</span>
+            <a class="logout" href="index.php?logout=1"><i class="fa fa-sign-out"></i> Keluar akun</a>
         </div>
-    </nav>
-
-    <div class="container-fluid">
+    </aside>
+    <div id="resellerOverlay" class="rs-overlay no-print"></div>
+    <main class="rs-main">
+        <header class="rs-topbar no-print">
+            <button id="resellerMenuTrigger" class="rs-mobile-trigger" type="button" aria-label="Buka menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+            <div class="rs-page-context">
+                <strong><?=htmlspecialchars(ucwords(str_replace('-', ' ', $page)))?></strong>
+                <span><?=date('l, d F Y')?></span>
+            </div>
+            <div class="rs-top-actions">
+                <div class="rs-balance-pill">
+                    <i class="fa fa-money"></i>
+                    <span><small>Saldo tersedia</small><strong>Rp <?=number_format($reseller['balance'], 0, ',', '.')?></strong></span>
+                </div>
+                <div class="rs-avatar" title="<?=htmlspecialchars($reseller['name'])?>"><?=htmlspecialchars(strtoupper(substr($reseller['name'], 0, 1)))?></div>
+            </div>
+        </header>
+        <div class="rs-content">
         <?php
         switch ($page) {
             case 'dashboard':
@@ -208,12 +204,18 @@ if (isset($data) && is_array($data)) {
                 include __DIR__ . '/r_dashboard.php';
         }
         ?>
-    </div>
-
-    <footer class="text-center text-muted no-print" style="padding:20px">
-        <small>Mikhmon V3 Reseller System | <?=htmlspecialchars($reseller['name'])?></small>
-    </footer>
-
-    <script src="assets/js/mikhmon-ui.<?=$theme?>.min.js"></script>
+        </div>
+        <footer class="rs-footer no-print">Mikhmon Reseller · Kelola voucher lebih cepat dan terukur</footer>
+    </main>
+    <nav class="rs-mobile-nav no-print" aria-label="Navigasi seluler">
+        <a class="<?=$page=='dashboard'?'active':''?>" href="index.php?page=dashboard"><i class="fa fa-dashboard"></i><span>Home</span></a>
+        <a class="<?=$page=='generate'?'active':''?>" href="index.php?page=generate"><i class="fa fa-plus-circle"></i><span>Beli</span></a>
+        <a class="<?=$page=='vouchers'?'active':''?>" href="index.php?page=vouchers"><i class="fa fa-ticket"></i><span>Voucher</span></a>
+        <a class="<?=$page=='transactions'?'active':''?>" href="index.php?page=transactions"><i class="fa fa-exchange"></i><span>Transaksi</span></a>
+        <a class="<?=$page=='profile'?'active':''?>" href="index.php?page=profile"><i class="fa fa-user"></i><span>Profil</span></a>
+    </nav>
+</div>
+<script src="assets/js/mikhmon-ui.<?=$theme?>.min.js"></script>
+<script src="assets/js/reseller-modern.js"></script>
 </body>
 </html>

@@ -174,11 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
 }
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <h3><i class="fa fa-ticket"></i> Beli Voucher</h3>
-        <hr>
-    </div>
+<div class="rs-page-head">
+    <div><h1>Beli voucher</h1><p>Pilih router, profile, dan jumlah voucher yang Anda butuhkan.</p></div>
 </div>
 
 <?php if(isset($generateResult['success'])): ?>

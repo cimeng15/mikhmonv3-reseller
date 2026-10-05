@@ -55,12 +55,9 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
 }));
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <h3><i class="fa fa-ticket"></i> Voucher Saya</h3>
-        <p class="text-muted">Hanya voucher yang dibuat oleh akun <strong><?=htmlspecialchars($reseller['username'])?></strong> yang ditampilkan.</p>
-        <hr>
-    </div>
+<div class="rs-page-head">
+    <div><h1>Voucher saya</h1><p>Voucher aktif dan histori milik akun <strong><?=htmlspecialchars($reseller['username'])?></strong>.</p></div>
+    <a href="index.php?page=generate" class="btn btn-primary"><i class="fa fa-plus"></i> Beli Voucher</a>
 </div>
 
 <?php if ($voucherError !== ''): ?>
@@ -110,7 +107,7 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
     <div class="panel-heading"><h4><i class="fa fa-list"></i> <?=$voucherRows ? count($voucherRows) : 0?> voucher ditemukan</h4></div>
     <div class="panel-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover">
+            <table class="table table-striped table-hover rs-card-table">
                 <thead>
                     <tr>
                         <th>#</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Comment</th><th>Dibuat</th><th>Aksi</th>
@@ -122,11 +119,11 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                 <?php else: ?>
                     <?php foreach ($voucherRows as $number => $voucher): ?>
                     <tr>
-                        <td><?=($number + 1)?></td>
-                        <td><strong><?=htmlspecialchars($voucher['name'] ?? '')?></strong></td>
-                        <td><?=htmlspecialchars($voucher['profile'] ?? '-')?></td>
-                        <td><?=htmlspecialchars($voucher['_session_name'] ?? '-')?></td>
-                        <td>
+                        <td data-label="#"><?=($number + 1)?></td>
+                        <td data-label="Username"><strong><?=htmlspecialchars($voucher['name'] ?? '')?></strong></td>
+                        <td data-label="Profile"><?=htmlspecialchars($voucher['profile'] ?? '-')?></td>
+                        <td data-label="Router"><?=htmlspecialchars($voucher['_session_name'] ?? '-')?></td>
+                        <td data-label="Status">
                             <?php if (($voucher['_exists_on_router'] ?? false) !== true): ?>
                                 <span class="label label-default">Dihapus dari Router</span>
                             <?php elseif (($voucher['disabled'] ?? 'false') === 'true'): ?>
@@ -135,9 +132,9 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                                 <span class="label label-success">Active</span>
                             <?php endif; ?>
                         </td>
-                        <td><?=htmlspecialchars($voucher['comment'] ?? '')?></td>
-                        <td><?=htmlspecialchars($voucher['_local_created_at'] ?? '-')?></td>
-                        <td>
+                        <td data-label="Comment"><?=htmlspecialchars($voucher['comment'] ?? '')?></td>
+                        <td data-label="Dibuat"><?=htmlspecialchars($voucher['_local_created_at'] ?? '-')?></td>
+                        <td data-label="Aksi">
                             <a class="btn btn-xs btn-default" href="index.php?page=vouchers&session=<?=urlencode($voucher['_session_name'] ?? '')?>&search=<?=urlencode($voucher['name'] ?? '')?>">
                                 <i class="fa fa-search"></i> Detail
                             </a>
