@@ -26,7 +26,7 @@ $resellers = getAllResellers();
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><i class="fa fa-users"></i> Reseller Management
+                <h4><i class="fa fa-users"></i> Kelola Reseller
                     <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#modalAddReseller">
                         <i class="fa fa-plus"></i> Tambah Reseller
                     </button>
@@ -42,15 +42,14 @@ $resellers = getAllResellers();
                                 <th>Nama</th>
                                 <th>Telepon</th>
                                 <th>Saldo</th>
-                                <th>Diskon</th>
-                                <th>Sessions</th>
+                                <th>Router</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php if(empty($resellers)): ?>
-                            <tr><td colspan="9" class="text-center">Belum ada reseller</td></tr>
+                            <tr><td colspan="8" class="text-center">Belum ada reseller</td></tr>
                         <?php else: ?>
                             <?php $no=1; foreach($resellers as $r): ?>
                             <tr id="row-<?=$r['id']?>">
@@ -59,13 +58,12 @@ $resellers = getAllResellers();
                                 <td><?=htmlspecialchars($r['name'])?></td>
                                 <td><?=htmlspecialchars($r['phone'])?></td>
                                 <td class="text-right"><strong>Rp <?=number_format($r['balance'], 0, ',', '.')?></strong></td>
-                                <td class="text-center"><?=$r['discount']?>%</td>
                                 <td><small><?=htmlspecialchars($r['allowed_sessions'] ?: 'Semua')?></small></td>
                                 <td class="text-center">
                                     <?php if($r['status'] === 'active'): ?>
-                                        <span class="label label-success">Active</span>
+                                        <span class="label label-success">Aktif</span>
                                     <?php else: ?>
-                                        <span class="label label-danger">Disabled</span>
+                                        <span class="label label-danger">Nonaktif</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
@@ -76,7 +74,7 @@ $resellers = getAllResellers();
                                         <button class="btn btn-warning btn-edit" data-id="<?=$r['id']?>" title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </button>
-                                        <button class="btn btn-default btn-toggle" data-id="<?=$r['id']?>" title="Toggle Status">
+                                        <button class="btn btn-default btn-toggle" data-id="<?=$r['id']?>" title="Ubah status">
                                             <i class="fa fa-power-off"></i>
                                         </button>
                                         <button class="btn btn-danger btn-delete" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Hapus">
@@ -100,7 +98,7 @@ $resellers = getAllResellers();
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
                 <h4 class="modal-title"><i class="fa fa-user-plus"></i> Tambah Reseller</h4>
             </div>
             <form id="formAddReseller">
@@ -122,11 +120,7 @@ $resellers = getAllResellers();
                         <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx">
                     </div>
                     <div class="form-group">
-                        <label>Diskon (%)</label>
-                        <input type="number" name="discount" class="form-control" value="0" min="0" max="100" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label>Allowed Sessions (Router)</label>
+                        <label>Router yang Diizinkan</label>
                         <select name="allowed_sessions[]" class="form-control" multiple size="4">
                             <?php foreach($available_sessions as $s): ?>
                             <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
@@ -149,7 +143,7 @@ $resellers = getAllResellers();
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
                 <h4 class="modal-title"><i class="fa fa-pencil"></i> Edit Reseller</h4>
             </div>
             <form id="formEditReseller">
@@ -172,18 +166,14 @@ $resellers = getAllResellers();
                         <input type="text" name="phone" id="editPhone" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Diskon (%)</label>
-                        <input type="number" name="discount" id="editDiscount" class="form-control" min="0" max="100" step="0.5">
-                    </div>
-                    <div class="form-group">
                         <label>Status</label>
                         <select name="status" id="editStatus" class="form-control">
-                            <option value="active">Active</option>
-                            <option value="disabled">Disabled</option>
+                            <option value="active">Aktif</option>
+                            <option value="disabled">Nonaktif</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Allowed Sessions (Router)</label>
+                        <label>Router yang Diizinkan</label>
                         <select name="allowed_sessions[]" id="editSessions" class="form-control" multiple size="4">
                             <?php foreach($available_sessions as $s): ?>
                             <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
@@ -194,7 +184,7 @@ $resellers = getAllResellers();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i> Update</button>
+                    <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i> Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -206,7 +196,7 @@ $resellers = getAllResellers();
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
                 <h4 class="modal-title"><i class="fa fa-money"></i> Tambah Deposit</h4>
             </div>
             <form id="formDeposit">
@@ -257,7 +247,6 @@ $('.btn-edit').on('click', function() {
             $('#editUsername').val(d.username);
             $('#editName').val(d.name);
             $('#editPhone').val(d.phone);
-            $('#editDiscount').val(d.discount);
             $('#editStatus').val(d.status);
             var sessions = d.allowed_sessions ? d.allowed_sessions.split(',') : [];
             $('#editSessions').val(sessions);

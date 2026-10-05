@@ -25,7 +25,6 @@ try {
             $password = $_POST['password'] ?? '';
             $name = trim($_POST['name'] ?? '');
             $phone = trim($_POST['phone'] ?? '');
-            $discount = floatval($_POST['discount'] ?? 0);
             $allowed_sessions = $_POST['allowed_sessions'] ?? '';
 
             if (empty($username) || empty($password) || empty($name)) {
@@ -47,7 +46,6 @@ try {
                 'password' => $password,
                 'name' => $name,
                 'phone' => $phone,
-                'discount' => $discount,
                 'allowed_sessions' => $allowed_sessions
             ]);
 
@@ -64,7 +62,6 @@ try {
             $data = [
                 'name' => trim($_POST['name'] ?? ''),
                 'phone' => trim($_POST['phone'] ?? ''),
-                'discount' => floatval($_POST['discount'] ?? 0),
                 'status' => $_POST['status'] ?? 'active'
             ];
 

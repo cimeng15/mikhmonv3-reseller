@@ -57,8 +57,8 @@ if (empty($vouchers)) {
 
 <div class="no-print" style="margin-bottom:15px">
     <h3><i class="fa fa-print"></i> Cetak Voucher</h3>
-    <p>Transaksi #<?=$trx['id']?> | <?=date('d/m/Y H:i', strtotime($trx['created_at']))?> | <?=count($vouchers)?> voucher</p>
-    <button onclick="window.print()" class="btn btn-primary"><i class="fa fa-print"></i> Print</button>
+    <p>Transaksi <?=$trx['id']?>. <?=date('d/m/Y H:i', strtotime($trx['created_at']))?>. <?=count($vouchers)?> voucher.</p>
+    <button onclick="window.print()" class="btn btn-primary"><i class="fa fa-print"></i> Cetak</button>
     <a href="index.php?page=transactions" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
     <hr>
 </div>
@@ -70,8 +70,9 @@ if (empty($vouchers)) {
         <div class="voucher-code"><?=htmlspecialchars($v['username'])?></div>
         <div class="voucher-profile">
             Profil: <?=htmlspecialchars($v['profile'])?><br>
-            <?php if(!empty($v['price'])): ?>
-            Harga: Rp <?=number_format($v['price'], 0, ',', '.')?>
+            <?php $printPrice = (float)($v['selling_price'] ?? $v['price'] ?? 0); ?>
+            <?php if($printPrice > 0): ?>
+            Harga: Rp <?=number_format($printPrice, 0, ',', '.')?>
             <?php endif; ?>
         </div>
     </div>

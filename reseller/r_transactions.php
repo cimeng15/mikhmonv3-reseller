@@ -110,7 +110,7 @@ $summary = getTransactionSummary($reseller['id']);
                         <td data-label="Aksi">
                             <?php if($t['type']=='purchase' && !empty($t['voucher_data'])): ?>
                             <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default" target="_blank">
-                                <i class="fa fa-print"></i> Print
+                                <i class="fa fa-print"></i> Cetak
                             </a>
                             <?php endif; ?>
                         </td>

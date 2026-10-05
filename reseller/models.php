@@ -9,14 +9,13 @@ require_once __DIR__ . '/database.php';
 
 function createReseller($data) {
     $db = getDB();
-    $stmt = $db->prepare("INSERT INTO resellers (username, password, name, phone, balance, discount, status, allowed_sessions) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $db->prepare("INSERT INTO resellers (username, password, name, phone, balance, status, allowed_sessions) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([
         $data['username'],
         password_hash($data['password'], PASSWORD_DEFAULT),
         $data['name'],
         $data['phone'] ?? '',
         $data['balance'] ?? 0,
-        $data['discount'] ?? 0,
         $data['status'] ?? 'active',
         $data['allowed_sessions'] ?? ''
     ]);
@@ -27,7 +26,7 @@ function updateReseller($id, $data) {
     $db = getDB();
     $fields = [];
     $values = [];
-    $allowed = ['name', 'phone', 'discount', 'status', 'allowed_sessions'];
+    $allowed = ['name', 'phone', 'status', 'allowed_sessions'];
 
     foreach ($allowed as $field) {
         if (isset($data[$field])) {

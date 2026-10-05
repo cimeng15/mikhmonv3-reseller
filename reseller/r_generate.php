@@ -36,30 +36,14 @@ if (!empty($selectedSession) && in_array($selectedSession, $allSessions)) {
             $profileData = $API->comm("/ip/hotspot/user/profile/print");
             if (is_array($profileData)) {
                 foreach ($profileData as $p) {
-                    $price = 0;
-                    $validity = '';
-                    // Parse on-login script for price info
-                    if (!empty($p['on-login'])) {
-                        $parts = explode(',', $p['on-login']);
-                        foreach ($parts as $part) {
-                            $part = trim($part);
-                            if (strpos($part, ':variable price') !== false) {
-                                preg_match('/value=(\d+)/', $part, $m);
-                                if (isset($m[1])) $price = intval($m[1]);
-                            }
-                            if (strpos($part, ':variable validity') !== false) {
-                                preg_match('/value=([^\s"]+)/', $part, $m);
-                                if (isset($m[1])) $validity = $m[1];
-                            }
-                        }
-                    }
-                    // Also check shared-users and rate-limit
+                    $pricing = resellerParseProfilePricing($p['on-login'] ?? '');
                     $profiles[] = [
                         'name' => $p['name'] ?? '',
                         'shared_users' => $p['shared-users'] ?? '1',
                         'rate_limit' => $p['rate-limit'] ?? '',
-                        'price' => $price,
-                        'validity' => $validity
+                        'cost_price' => $pricing['cost_price'],
+                        'selling_price' => $pricing['selling_price'],
+                        'validity' => $pricing['validity']
                     ];
                 }
             }
@@ -76,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
     $session = $_POST['session'] ?? '';
     $profile = $_POST['profile'] ?? '';
     $qty = intval($_POST['qty'] ?? 1);
-    $price = floatval($_POST['price'] ?? 0);
     $nameLength = intval($_POST['name_length'] ?? 6);
     $prefix = $_POST['prefix'] ?? '';
     $charset = $_POST['charset'] ?? 'num';
@@ -84,12 +67,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
     if ($qty < 1 || $qty > 100) $qty = 1;
     if ($nameLength < 3 || $nameLength > 8) $nameLength = 6;
 
-    // Apply reseller discount
-    $discount = $reseller['discount'];
-    $priceAfterDiscount = $price - ($price * $discount / 100);
-    $totalCost = $priceAfterDiscount * $qty;
+    $costPrice = 0;
+    $sellingPrice = 0;
+    $selectedProfileData = null;
+    foreach ($profiles as $profileData) {
+        if (($profileData['name'] ?? '') === $profile) {
+            $selectedProfileData = $profileData;
+            break;
+        }
+    }
+    if ($selectedProfileData) {
+        $costPrice = (float)$selectedProfileData['cost_price'];
+        $sellingPrice = (float)$selectedProfileData['selling_price'];
+    }
+    $totalCost = $costPrice * $qty;
 
-    if ($reseller['balance'] < $totalCost) {
+    if (!$selectedProfileData || $costPrice <= 0) {
+        $generateResult = ['error' => 'Profil tidak valid atau Price belum ditetapkan pada profil Mikhmon.'];
+    } elseif ($reseller['balance'] < $totalCost) {
         $generateResult = ['error' => "Saldo tidak mencukupi. Butuh Rp " . number_format($totalCost, 0, ',', '.') . " (saldo: Rp " . number_format($reseller['balance'], 0, ',', '.') . ")"];
     } else if (in_array($session, $allSessions) && isset($data[$session])) {
         $config = resellerGetRouterConfig($session);
@@ -136,7 +131,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                         'username' => $name,
                         'password' => $name,
                         'profile' => $profile,
-                        'price' => $price,
+                        'cost_price' => $costPrice,
+                        'selling_price' => $sellingPrice,
+                        // Keep the legacy field as the customer-facing print price.
+                        'price' => $sellingPrice,
                         'comment' => $comment
                     ];
                 }
@@ -145,11 +143,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
             $API->disconnect();
 
             if (!empty($vouchers)) {
+                $createdQty = count($vouchers);
+                $totalCost = $costPrice * $createdQty;
                 $voucherJson = json_encode($vouchers);
-                $description = "Beli {$qty}x voucher [{$profile}] @ Rp " . number_format($price, 0, ',', '.') . " (diskon {$discount}%) - Router: {$session}";
+                $description = "Pembelian {$createdQty} voucher [{$profile}] dengan Price Rp " . number_format($costPrice, 0, ',', '.') . " per voucher - Router: {$session}";
                 $trxId = deductBalance($reseller['id'], $totalCost, $description, $voucherJson, $session);
                 recordResellerVouchers($reseller['id'], $trxId, $session, $vouchers);
-                logResellerAction($reseller['id'], 'purchase', "Beli {$qty} voucher {$profile} dari {$session}");
+                logResellerAction($reseller['id'], 'purchase', "Beli {$createdQty} voucher {$profile} dari {$session}");
 
                 // Refresh reseller data
                 $reseller = getCurrentReseller();
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
 ?>
 
 <div class="rs-page-head">
-    <div><h1>Beli voucher</h1><p>Pilih router, profile, dan jumlah voucher yang Anda butuhkan.</p></div>
+    <div><h1>Beli voucher</h1><p>Pilih router, profil, dan jumlah voucher. Saldo dipotong berdasarkan Price profil.</p></div>
 </div>
 
 <?php if(isset($generateResult['success'])): ?>
@@ -184,16 +184,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
     <div class="col-md-12">
         <div class="alert alert-success">
             <i class="fa fa-check-circle"></i>
-            <strong>Berhasil!</strong> <?=$generateResult['qty']?> voucher telah dibuat.
-            Total biaya: Rp <?=number_format($generateResult['total_cost'], 0, ',', '.')?>
-            | Saldo tersisa: Rp <?=number_format($reseller['balance'], 0, ',', '.')?>
+            <strong>Berhasil</strong> <?=$generateResult['qty']?> voucher telah dibuat.
+            Total biaya: Rp <?=number_format($generateResult['total_cost'], 0, ',', '.')?>.
+            Saldo tersisa: Rp <?=number_format($reseller['balance'], 0, ',', '.')?>
         </div>
 
         <div class="panel panel-success">
             <div class="panel-heading">
                 <h4><i class="fa fa-list"></i> Voucher yang Dibuat
                     <a href="index.php?page=print&trx_id=<?=$generateResult['trx_id']?>" class="btn btn-default btn-sm pull-right" target="_blank">
-                        <i class="fa fa-print"></i> Print Voucher
+                        <i class="fa fa-print"></i> Cetak Voucher
                     </a>
                 </h4>
             </div>
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
-                            <tr><th>#</th><th>Username</th><th>Password</th><th>Profile</th><th>Harga</th></tr>
+                            <tr><th>No.</th><th>Username</th><th>Password</th><th>Profil</th><th>Harga cetak</th></tr>
                         </thead>
                         <tbody>
                         <?php $no=1; foreach($generateResult['vouchers'] as $v): ?>
@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                                 <td><strong><?=htmlspecialchars($v['username'])?></strong></td>
                                 <td><?=htmlspecialchars($v['password'])?></td>
                                 <td><?=htmlspecialchars($v['profile'])?></td>
-                                <td>Rp <?=number_format($v['price'], 0, ',', '.')?></td>
+                                <td>Rp <?=number_format($v['selling_price'], 0, ',', '.')?></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
 <div class="row">
     <div class="col-md-8">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4><i class="fa fa-cog"></i> Generate Voucher</h4></div>
+            <div class="panel-heading"><h4><i class="fa fa-sliders"></i> Pengaturan voucher</h4></div>
             <div class="panel-body">
 
                 <!-- Step 1: Select Session -->
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                     <div class="form-group">
                         <label>Pilih Router: </label>
                         <select name="session" class="form-control" onchange="this.form.submit()">
-                            <option value="">-- Pilih Router --</option>
+                            <option value="">Pilih router</option>
                             <?php foreach($allSessions as $s): ?>
                             <option value="<?=htmlspecialchars($s)?>" <?=$selectedSession==$s?'selected':''?>><?=htmlspecialchars($s)?></option>
                             <?php endforeach; ?>
@@ -257,18 +257,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                     <input type="hidden" name="generate_vouchers" value="1">
 
                     <div class="form-group">
-                        <label>User Profile</label>
+                        <label>Profil voucher</label>
                         <select name="profile" id="profileSelect" class="form-control" required onchange="updatePrice()">
-                            <option value="">-- Pilih Profile --</option>
+                            <option value="">Pilih profil</option>
                             <?php foreach($profiles as $p): ?>
-                            <option value="<?=htmlspecialchars($p['name'])?>" data-price="<?=$p['price']?>" data-validity="<?=htmlspecialchars($p['validity'])?>">
-                                <?=htmlspecialchars($p['name'])?> - <?=$currency?> <?=number_format($p['price'], 0, ',', '.')?> <?=$p['validity'] ? "({$p['validity']})" : ''?>
+                            <option value="<?=htmlspecialchars($p['name'])?>" data-cost-price="<?=$p['cost_price']?>" data-selling-price="<?=$p['selling_price']?>" data-validity="<?=htmlspecialchars($p['validity'])?>">
+                                <?=htmlspecialchars($p['name'])?> — Price <?=$currency?> <?=number_format($p['cost_price'], 0, ',', '.')?><?=$p['validity'] ? " — {$p['validity']}" : ''?>
                             </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <input type="hidden" name="price" id="priceInput" value="0">
+                    <input type="hidden" id="costPriceInput" value="0">
+                    <input type="hidden" id="sellingPriceInput" value="0">
 
                     <div class="row">
                         <div class="col-md-4">
@@ -310,17 +311,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                     <hr>
                     <div class="well" id="costSummary" style="display:none">
                         <div class="row">
-                            <div class="col-xs-6">Harga per voucher:</div>
-                            <div class="col-xs-6 text-right" id="perPrice">-</div>
+                            <div class="col-xs-6">Price per voucher:</div>
+                            <div class="col-xs-6 text-right" id="perCostPrice">-</div>
                         </div>
-                        <?php if($reseller['discount'] > 0): ?>
-                        <div class="row text-success">
-                            <div class="col-xs-6">Diskon reseller (<?=$reseller['discount']?>%):</div>
-                            <div class="col-xs-6 text-right" id="discountAmount">-</div>
-                        </div>
-                        <?php endif; ?>
                         <div class="row">
-                            <div class="col-xs-6"><strong>Total Biaya:</strong></div>
+                            <div class="col-xs-6">Selling Price untuk cetak:</div>
+                            <div class="col-xs-6 text-right" id="perSellingPrice">-</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6"><strong>Total potongan saldo:</strong></div>
                             <div class="col-xs-6 text-right"><strong id="totalCost">-</strong></div>
                         </div>
                         <div class="row">
@@ -330,49 +329,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg btn-block" id="btnGenerate" disabled>
-                        <i class="fa fa-ticket"></i> Generate & Beli Voucher
+                        <i class="fa fa-ticket"></i> Beli dan Buat Voucher
                     </button>
                 </form>
 
                 <script>
-                var resellerBalance = <?=$reseller['balance']?>;
-                var resellerDiscount = <?=$reseller['discount']?>;
+                var resellerBalance = <?=json_encode((float)$reseller['balance'])?>;
 
                 function updatePrice() {
                     var sel = document.getElementById('profileSelect');
                     var opt = sel.options[sel.selectedIndex];
-                    var price = parseFloat(opt.getAttribute('data-price') || 0);
-                    document.getElementById('priceInput').value = price;
+                    var costPrice = parseFloat(opt.getAttribute('data-cost-price') || 0);
+                    var sellingPrice = parseFloat(opt.getAttribute('data-selling-price') || 0);
+                    document.getElementById('costPriceInput').value = costPrice;
+                    document.getElementById('sellingPriceInput').value = sellingPrice;
                     updateTotal();
                 }
 
                 function updateTotal() {
-                    var price = parseFloat(document.getElementById('priceInput').value || 0);
-                    var qty = parseInt(document.querySelector('input[name="qty"]').value || 1);
-                    if (price <= 0) {
+                    var costPrice = parseFloat(document.getElementById('costPriceInput').value || 0);
+                    var sellingPrice = parseFloat(document.getElementById('sellingPriceInput').value || 0);
+                    var qty = parseInt(document.querySelector('input[name="qty"]').value || 1, 10);
+                    if (costPrice <= 0) {
                         document.getElementById('costSummary').style.display = 'none';
                         document.getElementById('btnGenerate').disabled = true;
                         return;
                     }
-                    var discountAmt = price * resellerDiscount / 100;
-                    var priceAfterDiscount = price - discountAmt;
-                    var total = priceAfterDiscount * qty;
+                    var total = costPrice * qty;
 
                     document.getElementById('costSummary').style.display = 'block';
-                    document.getElementById('perPrice').textContent = 'Rp ' + price.toLocaleString('id-ID');
-                    <?php if($reseller['discount'] > 0): ?>
-                    document.getElementById('discountAmount').textContent = '- Rp ' + (discountAmt * qty).toLocaleString('id-ID');
-                    <?php endif; ?>
+                    document.getElementById('perCostPrice').textContent = 'Rp ' + costPrice.toLocaleString('id-ID');
+                    document.getElementById('perSellingPrice').textContent = sellingPrice > 0 ? 'Rp ' + sellingPrice.toLocaleString('id-ID') : 'Belum ditetapkan';
                     document.getElementById('totalCost').textContent = 'Rp ' + total.toLocaleString('id-ID');
 
                     var btn = document.getElementById('btnGenerate');
                     if (total > resellerBalance) {
                         btn.disabled = true;
-                        btn.textContent = 'Saldo Tidak Mencukupi';
+                        btn.innerHTML = '<i class="fa fa-ban"></i> Saldo tidak mencukupi';
                         btn.className = 'btn btn-danger btn-lg btn-block';
                     } else {
                         btn.disabled = false;
-                        btn.innerHTML = '<i class="fa fa-ticket"></i> Generate & Beli Voucher';
+                        btn.innerHTML = '<i class="fa fa-ticket"></i> Beli dan Buat Voucher';
                         btn.className = 'btn btn-primary btn-lg btn-block';
                     }
                 }
@@ -388,7 +385,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
             <div class="panel-heading"><h4><i class="fa fa-info-circle"></i> Info</h4></div>
             <div class="panel-body">
                 <p><strong>Saldo:</strong> Rp <?=number_format($reseller['balance'], 0, ',', '.')?></p>
-                <p><strong>Diskon:</strong> <?=$reseller['discount']?>%</p>
+                <p><strong>Dasar biaya:</strong> Price pada profil</p>
+                <p><strong>Harga cetak:</strong> Selling Price pada profil</p>
                 <p><strong>Router tersedia:</strong></p>
                 <ul>
                     <?php foreach($allSessions as $s): ?>

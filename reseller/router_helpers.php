@@ -35,6 +35,26 @@ if (!function_exists('resellerSessionIsAllowed')) {
     }
 }
 
+if (!function_exists('resellerParseProfilePricing')) {
+    /**
+     * Read Mikhmon profile metadata from the RouterOS on-login value.
+     * Format: index 2 = reseller cost (Price), index 3 = validity,
+     * index 4 = customer price printed on the voucher (Selling Price).
+     */
+    function resellerParseProfilePricing($onLogin) {
+        $parts = explode(',', (string)$onLogin);
+        $clean = function ($value) {
+            return trim((string)$value, " \t\n\r\0\x0B\"'()");
+        };
+
+        return [
+            'cost_price' => max(0, (float)$clean($parts[2] ?? 0)),
+            'validity' => $clean($parts[3] ?? ''),
+            'selling_price' => max(0, (float)$clean($parts[4] ?? 0))
+        ];
+    }
+}
+
 if (!function_exists('resellerConnect')) {
     function resellerConnect($sessionName, $allowedSessions) {
         if (!resellerSessionIsAllowed($sessionName, $allowedSessions)) {

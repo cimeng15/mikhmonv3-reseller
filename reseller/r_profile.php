@@ -52,7 +52,7 @@ $logs = getResellerLogs($reseller['id'], 30);
                     <tr><td><strong>Nama</strong></td><td><?=htmlspecialchars($reseller['name'])?></td></tr>
                     <tr><td><strong>Telepon</strong></td><td><?=htmlspecialchars($reseller['phone'] ?: '-')?></td></tr>
                     <tr><td><strong>Saldo</strong></td><td class="text-success"><strong>Rp <?=number_format($reseller['balance'], 0, ',', '.')?></strong></td></tr>
-                    <tr><td><strong>Diskon</strong></td><td><?=$reseller['discount']?>%</td></tr>
+                    <tr><td><strong>Skema harga</strong></td><td>Price profil untuk pembelian</td></tr>
                     <tr><td><strong>Status</strong></td><td><span class="label label-<?=$reseller['status']==='active'?'success':'danger'?>"><?=$reseller['status']?></span></td></tr>
                     <tr><td><strong>Bergabung</strong></td><td><?=date('d/m/Y', strtotime($reseller['created_at']))?></td></tr>
                     <tr>

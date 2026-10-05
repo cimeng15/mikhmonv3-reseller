@@ -31,7 +31,6 @@ function initDatabase($db) {
             name TEXT NOT NULL,
             phone TEXT DEFAULT '',
             balance REAL DEFAULT 0,
-            discount REAL DEFAULT 0,
             status TEXT DEFAULT 'active',
             allowed_sessions TEXT DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

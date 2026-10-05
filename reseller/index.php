@@ -158,15 +158,15 @@ if (isset($data) && is_array($data)) {
         </a>
         <div class="rs-nav-label">Menu utama</div>
         <ul class="rs-nav">
-            <li class="<?=$page=='dashboard'?'active':''?>"><a href="index.php?page=dashboard"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
-            <li class="<?=$page=='generate'?'active':''?>"><a href="index.php?page=generate"><i class="fa fa-plus-circle"></i><span>Beli Voucher</span></a></li>
+            <li class="<?=$page=='dashboard'?'active':''?>"><a href="index.php?page=dashboard"><i class="fa fa-th-large"></i><span>Ringkasan</span></a></li>
+            <li class="<?=$page=='generate'?'active':''?>"><a href="index.php?page=generate"><i class="fa fa-shopping-cart"></i><span>Beli Voucher</span></a></li>
             <li class="<?=$page=='vouchers'?'active':''?>"><a href="index.php?page=vouchers"><i class="fa fa-ticket"></i><span>Voucher Saya</span></a></li>
-            <li class="<?=$page=='transactions'?'active':''?>"><a href="index.php?page=transactions"><i class="fa fa-exchange"></i><span>Transaksi</span></a></li>
-            <li class="<?=$page=='profile'?'active':''?>"><a href="index.php?page=profile"><i class="fa fa-user"></i><span>Profil</span></a></li>
+            <li class="<?=$page=='transactions'?'active':''?>"><a href="index.php?page=transactions"><i class="fa fa-list-alt"></i><span>Riwayat Transaksi</span></a></li>
+            <li class="<?=$page=='profile'?'active':''?>"><a href="index.php?page=profile"><i class="fa fa-user-circle"></i><span>Akun Saya</span></a></li>
         </ul>
         <div class="rs-sidebar-account">
             <span class="name"><?=htmlspecialchars($reseller['name'])?></span>
-            <span class="role">@<?=htmlspecialchars($reseller['username'])?> · Reseller aktif</span>
+            <span class="role">@<?=htmlspecialchars($reseller['username'])?> — Reseller aktif</span>
             <a class="logout" href="index.php?logout=1"><i class="fa fa-sign-out"></i> Keluar akun</a>
         </div>
     </aside>
@@ -212,14 +212,14 @@ if (isset($data) && is_array($data)) {
         }
         ?>
         </div>
-        <footer class="rs-footer no-print">Mikhmon Reseller · Kelola voucher lebih cepat dan terukur</footer>
+        <footer class="rs-footer no-print">Mikhmon Reseller — Kelola voucher lebih cepat dan terukur</footer>
     </main>
     <nav class="rs-mobile-nav no-print" aria-label="Navigasi seluler">
-        <a class="<?=$page=='dashboard'?'active':''?>" href="index.php?page=dashboard"><i class="fa fa-dashboard"></i><span>Home</span></a>
-        <a class="<?=$page=='generate'?'active':''?>" href="index.php?page=generate"><i class="fa fa-plus-circle"></i><span>Beli</span></a>
+        <a class="<?=$page=='dashboard'?'active':''?>" href="index.php?page=dashboard"><i class="fa fa-th-large"></i><span>Ringkasan</span></a>
+        <a class="<?=$page=='generate'?'active':''?>" href="index.php?page=generate"><i class="fa fa-shopping-cart"></i><span>Beli</span></a>
         <a class="<?=$page=='vouchers'?'active':''?>" href="index.php?page=vouchers"><i class="fa fa-ticket"></i><span>Voucher</span></a>
-        <a class="<?=$page=='transactions'?'active':''?>" href="index.php?page=transactions"><i class="fa fa-exchange"></i><span>Transaksi</span></a>
-        <a class="<?=$page=='profile'?'active':''?>" href="index.php?page=profile"><i class="fa fa-user"></i><span>Profil</span></a>
+        <a class="<?=$page=='transactions'?'active':''?>" href="index.php?page=transactions"><i class="fa fa-list-alt"></i><span>Riwayat</span></a>
+        <a class="<?=$page=='profile'?'active':''?>" href="index.php?page=profile"><i class="fa fa-user-circle"></i><span>Akun</span></a>
     </nav>
 </div>
 <script src="assets/js/mikhmon-ui.<?=$theme?>.min.js?v=<?=filemtime(__DIR__ . '/assets/js/mikhmon-ui.'.$theme.'.min.js')?>"></script>

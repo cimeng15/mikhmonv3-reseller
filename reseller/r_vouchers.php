@@ -79,7 +79,7 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
             </div>
             <div class="form-group">
                 <select name="profile" class="form-control">
-                    <option value="">Semua Profile</option>
+                    <option value="">Semua Profil</option>
                     <?php foreach (array_keys($voucherProfiles) as $profileName): ?>
                     <option value="<?=htmlspecialchars($profileName)?>" <?=$voucherProfile === $profileName ? 'selected' : ''?>><?=htmlspecialchars($profileName)?></option>
                     <?php endforeach; ?>
@@ -89,13 +89,13 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                 <select name="status" class="form-control">
                     <option value="">Semua Status</option>
                     <option value="active" <?=$voucherStatus === 'active' ? 'selected' : ''?>>Aktif</option>
-                    <option value="disabled" <?=$voucherStatus === 'disabled' ? 'selected' : ''?>>Disabled</option>
-                    <option value="expired" <?=$voucherStatus === 'expired' ? 'selected' : ''?>>Expired</option>
+                    <option value="disabled" <?=$voucherStatus === 'disabled' ? 'selected' : ''?>>Nonaktif</option>
+                    <option value="expired" <?=$voucherStatus === 'expired' ? 'selected' : ''?>>Kedaluwarsa</option>
                     <option value="removed_from_router" <?=$voucherStatus === 'removed_from_router' ? 'selected' : ''?>>Dihapus dari Router</option>
                 </select>
             </div>
             <div class="form-group">
-                <input type="search" name="search" class="form-control" value="<?=htmlspecialchars($voucherSearch)?>" placeholder="Cari username/comment">
+                <input type="search" name="search" class="form-control" value="<?=htmlspecialchars($voucherSearch)?>" placeholder="Cari username atau catatan">
             </div>
             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tampilkan</button>
             <a href="index.php?page=vouchers" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
@@ -110,7 +110,7 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
             <table class="table table-striped table-hover rs-card-table">
                 <thead>
                     <tr>
-                        <th>#</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Comment</th><th>Dibuat</th><th>Aksi</th>
+                        <th>No.</th><th>Username</th><th>Profil</th><th>Router</th><th>Status</th><th>Catatan</th><th>Dibuat</th><th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,20 +119,20 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                 <?php else: ?>
                     <?php foreach ($voucherRows as $number => $voucher): ?>
                     <tr>
-                        <td data-label="#"><?=($number + 1)?></td>
+                        <td data-label="No."><?=($number + 1)?></td>
                         <td data-label="Username"><strong><?=htmlspecialchars($voucher['name'] ?? '')?></strong></td>
-                        <td data-label="Profile"><?=htmlspecialchars($voucher['profile'] ?? '-')?></td>
+                        <td data-label="Profil"><?=htmlspecialchars($voucher['profile'] ?? '-')?></td>
                         <td data-label="Router"><?=htmlspecialchars($voucher['_session_name'] ?? '-')?></td>
                         <td data-label="Status">
                             <?php if (($voucher['_exists_on_router'] ?? false) !== true): ?>
                                 <span class="label label-default">Dihapus dari Router</span>
                             <?php elseif (($voucher['disabled'] ?? 'false') === 'true'): ?>
-                                <span class="label label-danger">Disabled</span>
+                                <span class="label label-danger">Nonaktif</span>
                             <?php else: ?>
-                                <span class="label label-success">Active</span>
+                                <span class="label label-success">Aktif</span>
                             <?php endif; ?>
                         </td>
-                        <td data-label="Comment"><?=htmlspecialchars($voucher['comment'] ?? '')?></td>
+                        <td data-label="Catatan"><?=htmlspecialchars($voucher['comment'] ?? '')?></td>
                         <td data-label="Dibuat"><?=htmlspecialchars($voucher['_local_created_at'] ?? '-')?></td>
                         <td data-label="Aksi">
                             <a class="btn btn-xs btn-default" href="index.php?page=vouchers&session=<?=urlencode($voucher['_session_name'] ?? '')?>&search=<?=urlencode($voucher['name'] ?? '')?>">

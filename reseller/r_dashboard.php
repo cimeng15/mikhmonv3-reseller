@@ -10,8 +10,8 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
 
 <div class="rs-page-head">
     <div>
-        <h1>Halo, <?=htmlspecialchars(explode(' ', trim($reseller['name']))[0])?> 👋</h1>
-        <p><span class="rs-status-dot"></span>Akun aktif · Pantau bisnis voucher Anda hari ini.</p>
+        <h1>Halo, <?=htmlspecialchars(explode(' ', trim($reseller['name']))[0])?></h1>
+        <p><span class="rs-status-dot"></span>Akun aktif. Pantau bisnis voucher Anda hari ini.</p>
     </div>
     <a href="index.php?page=generate" class="btn btn-primary"><i class="fa fa-plus"></i> Beli Voucher</a>
 </div>
@@ -22,7 +22,7 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
             <div class="eyebrow">Saldo tersedia</div>
             <div class="amount">Rp <?=number_format($reseller['balance'], 0, ',', '.')?></div>
             <div class="meta">
-                <span><i class="fa fa-percent"></i> Diskon <?=$reseller['discount']?>%</span>
+                <span><i class="fa fa-credit-card"></i> Biaya mengikuti Price profil</span>
                 <span><i class="fa fa-server"></i> <?=count($allSessions)?> router tersedia</span>
             </div>
         </div>
@@ -65,7 +65,7 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
 <div class="rs-quick-grid">
     <a href="index.php?page=generate" class="rs-quick-action">
         <span class="rs-quick-icon"><i class="fa fa-plus"></i></span>
-        <span><strong>Beli voucher baru</strong><small>Pilih router dan profile voucher</small></span>
+        <span><strong>Beli voucher baru</strong><small>Pilih router dan profil voucher</small></span>
     </a>
     <a href="index.php?page=vouchers" class="rs-quick-action">
         <span class="rs-quick-icon"><i class="fa fa-ticket"></i></span>
@@ -104,8 +104,8 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
                         <td data-label="Keterangan"><?=htmlspecialchars($t['description'])?></td>
                         <td data-label="Aksi">
                             <?php if($t['type']=='purchase' && !empty($t['voucher_data'])): ?>
-                            <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
-                            <?php else: ?><span class="text-muted">—</span><?php endif; ?>
+                            <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Cetak</a>
+                            <?php else: ?><span class="text-muted">Tidak ada</span><?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; endif; ?>
