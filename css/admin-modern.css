@@ -20,7 +20,8 @@
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--mk-bg); }
 body.mk-admin-body,
-body.mk-admin-login {
+body.mk-admin-login,
+body.mk-hotspot-body {
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
@@ -599,4 +600,256 @@ body.mk-admin-login { display: grid; place-items: center; padding: 22px; }
   .mk-admin-overlay { display: none !important; }
   .mk-admin-body #main { margin: 0 !important; padding: 0 !important; }
   .mk-admin-body .main-container { max-width: none; padding: 0; }
+}
+
+/* ===== Hotspot / Router pages (index.php) ===== */
+/* These pages use the legacy sidebar JS (open/close toggle).
+   We only restyle the visuals — we do NOT override display or width
+   so the legacy mikhmon-ui.*.min.js can keep controlling the sidebar. */
+
+body.mk-hotspot-body a { text-decoration: none; }
+body.mk-hotspot-body button,
+body.mk-hotspot-body input,
+body.mk-hotspot-body select { font: inherit; }
+
+/* Navbar */
+.mk-hotspot-body .navbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1100;
+  height: var(--mk-topbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: visible;
+  padding: 0 18px;
+  color: var(--mk-ink);
+  border: 0;
+  border-bottom: 1px solid rgba(220, 230, 217, .9);
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 5px 24px rgba(16, 43, 30, .04);
+  backdrop-filter: blur(16px);
+}
+.mk-hotspot-body .navbar-left,
+.mk-hotspot-body .navbar-right { display: flex; align-items: center; min-width: 0; }
+.mk-hotspot-body .navbar-left a,
+.mk-hotspot-body .navbar-right a {
+  float: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 13px;
+  color: var(--mk-ink);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.mk-hotspot-body .navbar a:hover { color: var(--mk-brand-dark); background: var(--mk-soft); }
+.mk-hotspot-body #brand {
+  min-width: 140px;
+  justify-content: flex-start;
+  padding-left: 8px;
+  color: var(--mk-brand-dark);
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: -.03em;
+}
+.mk-hotspot-body #brand::before {
+  content: "M";
+  width: 36px; height: 36px;
+  display: inline-grid; place-items: center;
+  margin-right: 10px;
+  color: var(--mk-brand-dark);
+  border-radius: 11px;
+  background: var(--mk-accent);
+  font-size: 16px; font-weight: 900;
+}
+.mk-hotspot-body #openNav,
+.mk-hotspot-body #closeNav { width: 42px; padding: 0; font-size: 17px; }
+.mk-hotspot-body #cpage {
+  justify-content: flex-start;
+  max-width: min(40vw, 430px);
+  overflow: hidden;
+  color: var(--mk-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 650;
+}
+.mk-hotspot-body .navbar-right { gap: 7px; }
+.mk-hotspot-body .navbar-right .ses {
+  float: none; width: auto; max-width: 170px; height: 38px;
+  margin: 0 !important;
+  padding: 7px 30px 7px 10px !important;
+  color: var(--mk-ink);
+  border: 1px solid var(--mk-line); border-radius: 10px; background: #fff;
+}
+.mk-hotspot-body #logout { color: #9f2929; }
+
+/* Sidebar — visual only, NO display/width override */
+.mk-hotspot-body .sidenav {
+  position: fixed;
+  inset: var(--mk-topbar) auto 0 0;
+  z-index: 1050;
+  margin: 0;
+  padding: 16px 12px 26px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: #fff;
+  border: 0;
+  background: var(--mk-brand-dark);
+  box-shadow: 10px 0 35px rgba(16, 43, 30, .08);
+}
+.mk-hotspot-body .sidenav .menu,
+.mk-hotspot-body .sidenav > a,
+.mk-hotspot-body .sidenav .dropdown-btn,
+.mk-hotspot-body .sidenav .dropdown-container > a {
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 11px;
+  margin: 3px 0;
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, .72);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 680;
+  text-align: left;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+.mk-hotspot-body .sidenav .menu:hover,
+.mk-hotspot-body .sidenav > a:hover,
+.mk-hotspot-body .sidenav .dropdown-btn:hover,
+.mk-hotspot-body .sidenav .dropdown-container > a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, .08);
+}
+.mk-hotspot-body .sidenav .active {
+  color: var(--mk-brand-dark) !important;
+  background: var(--mk-accent) !important;
+}
+.mk-hotspot-body .sidenav .fa { width: 18px; flex: none; text-align: center; }
+.mk-hotspot-body .sidenav .fa-caret-down { width: auto; margin-left: auto; }
+.mk-hotspot-body .sidenav .dropdown-container {
+  margin: 2px 0 7px;
+  padding: 3px 0 3px 12px;
+  border-left: 1px solid rgba(255,255,255,.12);
+  background: transparent;
+}
+.mk-hotspot-body .sidenav .dropdown-container > a { min-height: 39px; font-size: 12px; }
+.mk-hotspot-body .sidenav .card-header {
+  min-height: auto; margin: 0 0 14px; padding: 10px 12px;
+  color: #fff; border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.06);
+}
+.mk-hotspot-body .sidenav .card-header h3 { margin: 0; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.mk-hotspot-body .sidenav .spa { min-height: 1px; margin: 10px 4px; padding: 0; border-bottom: 1px solid rgba(255,255,255,.1); border-radius: 0; }
+
+/* Main content */
+.mk-hotspot-body #main {
+  min-width: 0;
+  min-height: 100vh;
+  padding-top: var(--mk-topbar);
+  background: var(--mk-bg);
+  transition: margin .24s ease;
+}
+.mk-hotspot-body .main-container {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 26px 28px 42px;
+}
+
+/* Cards, panels, tables, forms, buttons */
+.mk-hotspot-body .card,
+.mk-hotspot-body .panel {
+  margin-bottom: 16px; overflow: hidden; color: var(--mk-ink);
+  border: 1px solid var(--mk-line) !important;
+  border-radius: var(--mk-radius) !important;
+  background: var(--mk-surface) !important;
+  box-shadow: none !important;
+}
+.mk-hotspot-body .card-header,
+.mk-hotspot-body .panel-heading {
+  min-height: 58px; display: flex; align-items: center;
+  padding: 15px 18px !important; color: var(--mk-ink) !important;
+  border: 0 !important; border-bottom: 1px solid var(--mk-line) !important;
+  background: linear-gradient(160deg, #f9fbf8 0%, #f0f5ed 100%) !important;
+}
+.mk-hotspot-body .card-header h3,
+.mk-hotspot-body .card-header h4,
+.mk-hotspot-body .panel-heading h3,
+.mk-hotspot-body .panel-heading h4 { width: 100%; margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
+.mk-hotspot-body .card-header .fa,
+.mk-hotspot-body .panel-heading .fa { margin-right: 7px; color: var(--mk-brand); }
+.mk-hotspot-body .card-body,
+.mk-hotspot-body .panel-body { padding: 18px !important; color: var(--mk-ink); }
+.mk-hotspot-body .box { border-radius: 15px !important; box-shadow: none !important; }
+
+.mk-hotspot-body .form-control {
+  min-height: 43px; padding: 9px 12px !important;
+  color: var(--mk-ink) !important;
+  border: 1px solid var(--mk-line) !important; border-radius: 11px !important;
+  background: #fff !important; box-shadow: none !important;
+}
+.mk-hotspot-body .form-control::placeholder { color: #9aaa9f !important; opacity: 1 !important; }
+.mk-hotspot-body .form-control:focus { border-color: var(--mk-brand) !important; box-shadow: 0 0 0 3px rgba(47,133,90,.12) !important; }
+.mk-hotspot-body .form-group label { display: block; margin-bottom: 6px; color: var(--mk-ink); font-size: 12px; font-weight: 750; }
+
+.mk-hotspot-body .btn,
+.mk-hotspot-body input[type="submit"] {
+  min-height: 40px; padding: 9px 15px !important;
+  border-radius: 999px !important; font-size: 12px !important; font-weight: 750 !important;
+  box-shadow: none !important;
+}
+.mk-hotspot-body .btn-primary,
+.mk-hotspot-body .btn-success { color: var(--mk-brand-dark) !important; background: var(--mk-accent) !important; }
+.mk-hotspot-body .btn-info { color: #fff !important; background: var(--mk-blue) !important; }
+.mk-hotspot-body .btn-warning { color: #fff !important; background: var(--mk-orange) !important; }
+.mk-hotspot-body .btn-danger { color: #fff !important; background: var(--mk-red) !important; }
+.mk-hotspot-body .btn-default { color: var(--mk-ink) !important; border: 1px solid var(--mk-line) !important; background: #fff !important; }
+
+.mk-hotspot-body .table { width: 100%; margin-bottom: 0; color: var(--mk-ink); background: #fff; }
+.mk-hotspot-body .table > thead > tr > th {
+  padding: 12px 11px !important; color: var(--mk-muted) !important;
+  border: 0 !important; border-bottom: 1px solid var(--mk-line) !important;
+  background: #f8faf7 !important; font-size: 10px; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+.mk-hotspot-body .table > tbody > tr > td { padding: 12px 11px !important; color: var(--mk-ink); border-color: #edf1eb !important; vertical-align: middle; }
+.mk-hotspot-body .table-striped > tbody > tr:nth-of-type(odd) { background: #fbfcfa !important; }
+.mk-hotspot-body .table-hover > tbody > tr:hover { background: #f1f7ed !important; }
+.mk-hotspot-body .label { padding: 5px 8px; border-radius: 999px; }
+.mk-hotspot-body .table-responsive { width: 100%; overflow-x: auto; border: 0; border-radius: 13px; -webkit-overflow-scrolling: touch; }
+
+.mk-hotspot-body .modal-content { overflow: hidden; color: var(--mk-ink); border: 0; border-radius: 20px; box-shadow: 0 30px 90px rgba(16,43,30,.25); }
+.mk-hotspot-body #notify { z-index: 2000; border-radius: 12px; }
+
+@media (max-width: 900px) {
+  .mk-hotspot-body .navbar { width: 100vw !important; max-width: 100vw; padding: 0 10px; }
+  .mk-hotspot-body #brand { min-width: auto; font-size: 0; }
+  .mk-hotspot-body #brand::before { margin-right: 0; }
+  .mk-hotspot-body #cpage { max-width: 34vw; padding-left: 7px; }
+  .mk-hotspot-body .navbar-right .stheme,
+  .mk-hotspot-body .navbar-right a[title="Idle Timeout"] { display: none !important; }
+  .mk-hotspot-body #main { width: 100% !important; margin-left: 0 !important; }
+  .mk-hotspot-body .main-container { max-width: 100%; padding: 20px 16px 42px; }
+  .mk-hotspot-body [class*="col-"] { width: 100%; float: none; }
+}
+
+@media (max-width: 620px) {
+  .mk-hotspot-body #cpage { max-width: 28vw; font-size: 11px; }
+  .mk-hotspot-body #logout { width: 40px; padding: 0; font-size: 0; }
+  .mk-hotspot-body #logout .fa { margin: 0 !important; font-size: 16px; }
+  .mk-hotspot-body .main-container { padding: 15px 11px 42px; }
+  .mk-hotspot-body .card-header,
+  .mk-hotspot-body .panel-heading,
+  .mk-hotspot-body .card-body,
+  .mk-hotspot-body .panel-body { padding: 14px !important; }
+  .mk-hotspot-body .btn { width: 100%; }
+  .mk-hotspot-body .panel-heading .btn,
+  .mk-hotspot-body .card-header .btn { width: auto; }
 }

@@ -46,7 +46,15 @@ error_reporting(0);
 
 		
 	</head>
-	<body class="<?=isset($_SESSION['mikhmon']) ? 'mk-admin-body' : 'mk-admin-login'?>">
+	<body class="<?php
+if (!isset($_SESSION['mikhmon'])) {
+	echo 'mk-admin-login';
+} elseif (basename($_SERVER['SCRIPT_FILENAME']) === 'admin.php') {
+	echo 'mk-admin-body';
+} else {
+	echo 'mk-hotspot-body';
+}
+?>">
 		<div class="wrapper">
 
 			
