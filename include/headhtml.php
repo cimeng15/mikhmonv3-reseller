@@ -18,9 +18,9 @@
 session_start();
  // hide all error
 error_reporting(0);
-?>
-<!DOCTYPE html>
-<html>
+$safeTheme = preg_replace('/[^a-z0-9_-]/i', '', (string)($theme ?? 'light'));
+?><!DOCTYPE html>
+<html class="mk-theme-<?= $safeTheme ?: 'light' ?>">
 	<head>
 		<title>MIKHMON <?= $hotspotname; ?></title>
 		<meta charset="utf-8">
