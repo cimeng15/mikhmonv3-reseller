@@ -45,9 +45,9 @@ if (!isResellerLoggedIn()) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mikhmon Reseller Panel</title>
     <link rel="icon" href="assets/img/favicon.png">
-    <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/reseller-modern.css">
+    <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css?v=<?=filemtime(__DIR__ . '/assets/css/mikhmon-ui.'.$theme.'.min.css')?>">
+    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css?v=<?=filemtime(__DIR__ . '/assets/css/font-awesome/font-awesome.min.css')?>">
+    <link rel="stylesheet" href="assets/css/reseller-modern.css?v=<?=filemtime(__DIR__ . '/assets/css/reseller-modern.css')?>">
 </head>
 <body class="rs-login-body">
     <main class="rs-login-shell">
@@ -137,9 +137,9 @@ if (isset($data) && is_array($data)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mikhmon Reseller - <?=htmlspecialchars($reseller['name'])?></title>
     <link rel="icon" href="assets/img/favicon.png">
-    <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/reseller-modern.css">
+    <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css?v=<?=filemtime(__DIR__ . '/assets/css/mikhmon-ui.'.$theme.'.min.css')?>">
+    <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css?v=<?=filemtime(__DIR__ . '/assets/css/font-awesome/font-awesome.min.css')?>">
+    <link rel="stylesheet" href="assets/css/reseller-modern.css?v=<?=filemtime(__DIR__ . '/assets/css/reseller-modern.css')?>">
     <script src="assets/js/jquery.min.js"></script>
 </head>
 <body class="rs-body">
@@ -215,7 +215,7 @@ if (isset($data) && is_array($data)) {
         <a class="<?=$page=='profile'?'active':''?>" href="index.php?page=profile"><i class="fa fa-user"></i><span>Profil</span></a>
     </nav>
 </div>
-<script src="assets/js/mikhmon-ui.<?=$theme?>.min.js"></script>
-<script src="assets/js/reseller-modern.js"></script>
+<script src="assets/js/mikhmon-ui.<?=$theme?>.min.js?v=<?=filemtime(__DIR__ . '/assets/js/mikhmon-ui.'.$theme.'.min.js')?>"></script>
+<script src="assets/js/reseller-modern.js?v=<?=filemtime(__DIR__ . '/assets/js/reseller-modern.js')?>"></script>
 </body>
 </html>
