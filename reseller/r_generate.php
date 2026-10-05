@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
         <div class="panel panel-success">
             <div class="panel-heading">
                 <h4><i class="fa fa-list"></i> Voucher yang Dibuat
-                    <a href="reseller.php?page=print&trx_id=<?=$generateResult['trx_id']?>" class="btn btn-default btn-sm pull-right" target="_blank">
+                    <a href="index.php?page=print&trx_id=<?=$generateResult['trx_id']?>" class="btn btn-default btn-sm pull-right" target="_blank">
                         <i class="fa fa-print"></i> Print Voucher
                     </a>
                 </h4>

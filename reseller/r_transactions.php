@@ -72,7 +72,7 @@ $summary = getTransactionSummary($reseller['id']);
                 <input type="date" name="date_to" class="form-control" value="<?=htmlspecialchars($filter_to)?>" placeholder="Sampai">
             </div>
             <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filter</button>
-            <a href="reseller.php?page=transactions" class="btn btn-default"><i class="fa fa-refresh"></i></a>
+            <a href="index.php?page=transactions" class="btn btn-default"><i class="fa fa-refresh"></i></a>
         </form>
 
         <div class="table-responsive">
@@ -112,7 +112,7 @@ $summary = getTransactionSummary($reseller['id']);
                         <td><?=htmlspecialchars($t['description'])?></td>
                         <td>
                             <?php if($t['type']=='purchase' && !empty($t['voucher_data'])): ?>
-                            <a href="reseller.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default" target="_blank">
+                            <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default" target="_blank">
                                 <i class="fa fa-print"></i> Print
                             </a>
                             <?php endif; ?>

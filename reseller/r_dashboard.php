@@ -66,19 +66,19 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
 <!-- Quick Action -->
 <div class="row">
     <div class="col-md-4">
-        <a href="reseller.php?page=generate" class="btn btn-primary btn-lg btn-block" style="padding:20px">
+        <a href="index.php?page=generate" class="btn btn-primary btn-lg btn-block" style="padding:20px">
             <i class="fa fa-ticket fa-2x"></i><br>
             Beli Voucher Baru
         </a>
     </div>
     <div class="col-md-4">
-        <a href="reseller.php?page=transactions" class="btn btn-info btn-lg btn-block" style="padding:20px">
+        <a href="index.php?page=transactions" class="btn btn-info btn-lg btn-block" style="padding:20px">
             <i class="fa fa-history fa-2x"></i><br>
             Riwayat Transaksi
         </a>
     </div>
     <div class="col-md-4">
-        <a href="reseller.php?page=profile" class="btn btn-default btn-lg btn-block" style="padding:20px">
+        <a href="index.php?page=profile" class="btn btn-default btn-lg btn-block" style="padding:20px">
             <i class="fa fa-user fa-2x"></i><br>
             Profil Saya
         </a>
@@ -126,7 +126,7 @@ $recentTrx = getTransactions($reseller['id'], ['limit' => 10]);
                                 <td><?=htmlspecialchars($t['description'])?></td>
                                 <td>
                                     <?php if($t['type']=='purchase' && !empty($t['voucher_data'])): ?>
-                                    <a href="reseller.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default">
+                                    <a href="index.php?page=print&trx_id=<?=$t['id']?>" class="btn btn-xs btn-default">
                                         <i class="fa fa-print"></i> Print
                                     </a>
                                     <?php endif; ?>

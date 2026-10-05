@@ -19,7 +19,7 @@ if ($trx_id > 0) {
 
 if (empty($vouchers)) {
     echo '<div class="alert alert-warning"><i class="fa fa-warning"></i> Tidak ada data voucher untuk dicetak.</div>';
-    echo '<a href="reseller.php?page=transactions" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>';
+    echo '<a href="index.php?page=transactions" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>';
     return;
 }
 ?>
@@ -59,7 +59,7 @@ if (empty($vouchers)) {
     <h3><i class="fa fa-print"></i> Cetak Voucher</h3>
     <p>Transaksi #<?=$trx['id']?> | <?=date('d/m/Y H:i', strtotime($trx['created_at']))?> | <?=count($vouchers)?> voucher</p>
     <button onclick="window.print()" class="btn btn-primary"><i class="fa fa-print"></i> Print</button>
-    <a href="reseller.php?page=transactions" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
+    <a href="index.php?page=transactions" class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali</a>
     <hr>
 </div>
 
