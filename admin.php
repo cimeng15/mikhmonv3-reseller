@@ -157,6 +157,12 @@ if ($id == "login" || substr($url, -1) == "p") {
 } elseif ($id == "resellers") {
   include_once('./include/menu.php');
   include_once('./reseller/admin_resellers.php');
+} elseif ($id == "reseller-deposits") {
+  include_once('./include/menu.php');
+  include_once('./reseller/admin_deposits.php');
+} elseif ($id == "reseller-reports") {
+  include_once('./include/menu.php');
+  include_once('./reseller/admin_reports.php');
 } elseif ($id == "about") {
   include_once('./include/menu.php');
   include_once('./include/about.php');
