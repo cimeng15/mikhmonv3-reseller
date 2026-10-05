@@ -149,6 +149,26 @@ $_voucher_code ="Kode Voucher";
 $_vouchers = "Voucher";
 $_yes = "Ya";
 
+// Reseller management
+$_reseller_management = "Manajemen Reseller";
+$_reseller_add = "Tambah Reseller";
+$_reseller_edit = "Edit Reseller";
+$_reseller_detail = "Detail Reseller";
+$_reseller_account = "Info Akun";
+$_reseller_permissions = "Hak Akses";
+$_reseller_balance = "Saldo";
+$_reseller_sessions = "Router Diizinkan";
+$_reseller_profiles = "Profil Diizinkan";
+$_reseller_back = "Kembali";
+$_reseller_empty = "Belum ada reseller. Klik Tambah Reseller untuk membuat.";
+$_reseller_confirm_delete = "Yakin ingin menghapus reseller";
+$_reseller_adjust_balance = "Atur Saldo";
+$_reseller_amount = "Jumlah";
+$_reseller_amount_hint = "Positif untuk menambah, negatif untuk mengurangi.";
+$_reseller_apply = "Terapkan";
+$_reseller_created = "Dibuat";
+$_reseller_updated = "Terakhir Diperbarui";
+
 
 
 

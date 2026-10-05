@@ -154,6 +154,9 @@ if ($id == "login" || substr($url, -1) == "p") {
   }
   fclose($f);
   echo "<script>window.location='./admin.php?id=sessions'</script>";
+} elseif ($id == "resellers") {
+  include_once('./include/menu.php');
+  include_once('./reseller/admin_resellers.php');
 } elseif ($id == "about") {
   include_once('./include/menu.php');
   include_once('./include/about.php');

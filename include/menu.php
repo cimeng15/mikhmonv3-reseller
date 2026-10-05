@@ -157,6 +157,18 @@ if (!isset($_SESSION["mikhmon"])) {
   } elseif ($id == "editor") {
     $seditor = "active";
     $mpage = $_template_editor;
+  } elseif ($id == "resellers" || $id == "reseller-delete" || $id == "reseller-toggle") {
+    $sresellers = "active";
+    $mpage = $_reseller_management;
+  } elseif ($id == "reseller-add") {
+    $sresellers = "active";
+    $mpage = $_reseller_add;
+  } elseif ($id == "reseller-edit") {
+    $sresellers = "active";
+    $mpage = $_reseller_edit;
+  } elseif ($id == "reseller-view") {
+    $sresellers = "active";
+    $mpage = $_reseller_detail;
   }
 }
 
@@ -219,6 +231,7 @@ if($idleto != "disable"){
 <?php 
 } ?>  
   <a href="./admin.php?id=sessions" class="menu <?= $ssesslist; ?>"><i class="fa fa-gear"></i> <?= $_admin_settings ?></a>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-users"></i> <?= $_reseller_management ?></a>
   <a href="./admin.php?id=settings&router=new-<?= rand(1111,9999) ?>" class="menu <?= $snsettings ?>"><i class="fa fa-plus"></i> <?= $_add_router ?></a>
   <a href="./admin.php?id=about" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
 
@@ -353,6 +366,7 @@ include('./info.php');
   <div class="dropdown-container <?= $settmenu; ?>">
   <a href="./admin.php?id=settings&session=<?= $session; ?>" class="menu "> <i class="fa fa-gear "></i> <?= $_session_settings ?> </a>
   <a href="./admin.php?id=sessions" class="menu "> <i class="fa fa-gear "></i> <?= $_admin_settings ?> </a>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"> <i class="fa fa-users "></i> <?= $_reseller_management ?> </a>
   <a href="./?hotspot=uplogo&session=<?= $session; ?>" class="menu <?= $uplogo; ?>"> <i class="fa fa-upload "></i> <?= $_upload_logo ?> </a>
   <a href="./?hotspot=template-editor&template=default&session=<?= $session; ?>" class="menu <?= $teditor; ?>"> <i class="fa fa-edit "></i> <?= $_template_editor ?> </a>          
   </div>

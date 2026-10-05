@@ -149,6 +149,26 @@ $_voucher_code ="Voucher Code";
 $_vouchers = "Vouchers";
 $_yes = "Yes";
 
+// Reseller management
+$_reseller_management = "Reseller Management";
+$_reseller_add = "Add Reseller";
+$_reseller_edit = "Edit Reseller";
+$_reseller_detail = "Reseller Detail";
+$_reseller_account = "Account Info";
+$_reseller_permissions = "Permissions & Access";
+$_reseller_balance = "Balance";
+$_reseller_sessions = "Allowed Routers";
+$_reseller_profiles = "Allowed Profiles";
+$_reseller_back = "Back";
+$_reseller_empty = "No resellers yet. Click Add Reseller to create one.";
+$_reseller_confirm_delete = "Are you sure you want to delete reseller";
+$_reseller_adjust_balance = "Adjust Balance";
+$_reseller_amount = "Amount";
+$_reseller_amount_hint = "Positive to add credit, negative to deduct.";
+$_reseller_apply = "Apply";
+$_reseller_created = "Created";
+$_reseller_updated = "Last Updated";
+
 
 
 
