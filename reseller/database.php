@@ -67,6 +67,29 @@ function initDatabase($db) {
         )
     ");
 
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS reseller_vouchers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reseller_id INTEGER NOT NULL,
+            transaction_id INTEGER,
+            session_name TEXT NOT NULL,
+            username TEXT NOT NULL,
+            password TEXT DEFAULT '',
+            profile TEXT DEFAULT '',
+            comment TEXT DEFAULT '',
+            router_id TEXT DEFAULT '',
+            status TEXT DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (reseller_id) REFERENCES resellers(id) ON DELETE CASCADE,
+            FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE SET NULL,
+            UNIQUE (session_name, username)
+        )
+    ");
+
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_vouchers_reseller ON reseller_vouchers(reseller_id)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_vouchers_session ON reseller_vouchers(session_name)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_vouchers_created ON reseller_vouchers(created_at)");
+
     $db->exec("CREATE INDEX IF NOT EXISTS idx_transactions_reseller ON transactions(reseller_id)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(type)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(created_at)");

@@ -1,2 +1,7 @@
 DirectoryIndex index.php
 Options -Indexes
+
+# Internal PHP files are included by the entry points and must not be requested directly.
+<FilesMatch "^(database|auth|models|router_helpers|r_.*|admin_.*)\.php$">
+    Require all denied
+</FilesMatch>

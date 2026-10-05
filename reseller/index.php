@@ -160,6 +160,9 @@ if (isset($data) && is_array($data)) {
                     <li class="<?=$page=='generate'?'active':''?>">
                         <a href="index.php?page=generate"><i class="fa fa-ticket"></i> Beli Voucher</a>
                     </li>
+                    <li class="<?=$page=='vouchers'?'active':''?>">
+                        <a href="index.php?page=vouchers"><i class="fa fa-list"></i> Voucher Saya</a>
+                    </li>
                     <li class="<?=$page=='transactions'?'active':''?>">
                         <a href="index.php?page=transactions"><i class="fa fa-history"></i> Transaksi</a>
                     </li>
@@ -188,6 +191,9 @@ if (isset($data) && is_array($data)) {
                 break;
             case 'generate':
                 include __DIR__ . '/r_generate.php';
+                break;
+            case 'vouchers':
+                include __DIR__ . '/r_vouchers.php';
                 break;
             case 'transactions':
                 include __DIR__ . '/r_transactions.php';

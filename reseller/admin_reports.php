@@ -7,6 +7,7 @@ if(!isset($_SESSION["mikhmon"])){echo "<script>window.location='./admin.php?id=l
 
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/models.php';
+require_once __DIR__ . '/router_helpers.php';
 
 $resellers = getAllResellers();
 $summaryAll = getTransactionSummary(null, 'all');
@@ -108,6 +109,65 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
                                 <td class="text-right"><strong>Rp <?=number_format($summaryMonth['purchase'], 0, ',', '.')?></strong></td>
                             </tr>
                         </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$voucherAdminFilters = [
+    'reseller_id' => intval($_GET['voucher_reseller_id'] ?? 0),
+    'session_name' => trim($_GET['voucher_session'] ?? ''),
+    'profile' => trim($_GET['voucher_profile'] ?? ''),
+    'search' => trim($_GET['voucher_search'] ?? ''),
+    'date_from' => trim($_GET['voucher_date_from'] ?? ''),
+    'date_to' => trim($_GET['voucher_date_to'] ?? ''),
+    'limit' => 500
+];
+$allVoucherRows = getAllResellerVouchers($voucherAdminFilters);
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4><i class="fa fa-ticket"></i> Seluruh Voucher Reseller</h4></div>
+            <div class="panel-body">
+                <form method="GET" class="form-inline" style="margin-bottom:15px">
+                    <input type="hidden" name="id" value="reseller-reports">
+                    <select name="voucher_reseller_id" class="form-control">
+                        <option value="">Semua Reseller</option>
+                        <?php foreach ($resellers as $r): ?>
+                        <option value="<?=$r['id']?>" <?=$voucherAdminFilters['reseller_id'] == $r['id'] ? 'selected' : ''?>><?=htmlspecialchars($r['name'])?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="text" name="voucher_session" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['session_name'])?>" placeholder="Router">
+                    <input type="text" name="voucher_profile" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['profile'])?>" placeholder="Profile">
+                    <input type="search" name="voucher_search" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['search'])?>" placeholder="Username/reseller">
+                    <input type="date" name="voucher_date_from" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['date_from'])?>">
+                    <input type="date" name="voucher_date_to" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['date_to'])?>">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-filter"></i> Filter</button>
+                </form>
+                <p class="text-muted">Total ditemukan: <?=count($allVoucherRows)?></p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead><tr><th>#</th><th>Reseller</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Dibuat</th><th>Comment</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($allVoucherRows as $i => $v): ?>
+                        <tr>
+                            <td><?=$i + 1?></td>
+                            <td><?=htmlspecialchars($v['reseller_name'] . ' (' . $v['reseller_username'] . ')')?></td>
+                            <td><strong><?=htmlspecialchars($v['username'])?></strong></td>
+                            <td><?=htmlspecialchars($v['profile'])?></td>
+                            <td><?=htmlspecialchars($v['session_name'])?></td>
+                            <td><span class="label label-<?=$v['status'] === 'active' ? 'success' : 'default'?>"><?=htmlspecialchars($v['status'])?></span></td>
+                            <td><?=date('d/m/Y H:i', strtotime($v['created_at']))?></td>
+                            <td><small><?=htmlspecialchars($v['comment'])?></small></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($allVoucherRows)): ?><tr><td colspan="8" class="text-center">Belum ada voucher tercatat.</td></tr><?php endif; ?>
+                        </tbody>
                     </table>
                 </div>
             </div>

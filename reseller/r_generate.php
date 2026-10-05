@@ -3,6 +3,7 @@
  * Mikhmon V3 - Reseller Voucher Generation
  * Buy vouchers from available router profiles
  */
+require_once __DIR__ . '/router_helpers.php';
 
 $selectedSession = $_GET['session'] ?? ($_POST['session'] ?? '');
 $profiles = [];
@@ -12,17 +13,22 @@ $generateResult = null;
 // Connect to router and get profiles if session selected
 if (!empty($selectedSession) && in_array($selectedSession, $allSessions)) {
     // Read router config
-    include __DIR__ . '/../include/readcfg.php';
+    require_once __DIR__ . '/../include/readcfg.php';
+    require_once __DIR__ . '/router_helpers.php';
 
     // Reconstruct readcfg variables for the selected session
     $session = $selectedSession;
     if (isset($data[$session])) {
-        $iphost = explode('!', $data[$session][1])[1] ?? '';
-        $userhost = explode('@|@', $data[$session][2])[1] ?? '';
-        $passwdhost = explode('#|#', $data[$session][3])[1] ?? '';
-        $hotspotname = explode('%', $data[$session][4])[1] ?? '';
-        $dnsname = explode('^', $data[$session][5])[1] ?? '';
-        $currency = explode('&', $data[$session][6])[1] ?? 'Rp';
+        $config = resellerGetRouterConfig($selectedSession);
+        if (!$config) {
+            $connectError = 'Konfigurasi router tidak ditemukan.';
+        } else {
+        $iphost = $config['iphost'];
+        $userhost = $config['userhost'];
+        $passwdhost = $config['passwdhost'];
+        $hotspotname = $config['hotspotname'];
+        $dnsname = $config['dnsname'];
+        $currency = $config['currency'];
 
         $API = new RouterosAPI();
         $API->debug = false;
@@ -61,6 +67,7 @@ if (!empty($selectedSession) && in_array($selectedSession, $allSessions)) {
         } else {
             $connectError = 'Gagal koneksi ke router ' . $selectedSession;
         }
+        }
     }
 }
 
@@ -85,10 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
     if ($reseller['balance'] < $totalCost) {
         $generateResult = ['error' => "Saldo tidak mencukupi. Butuh Rp " . number_format($totalCost, 0, ',', '.') . " (saldo: Rp " . number_format($reseller['balance'], 0, ',', '.') . ")"];
     } else if (in_array($session, $allSessions) && isset($data[$session])) {
-        $iphost = explode('!', $data[$session][1])[1] ?? '';
-        $userhost = explode('@|@', $data[$session][2])[1] ?? '';
-        $passwdhost = explode('#|#', $data[$session][3])[1] ?? '';
-        $hotspotname = explode('%', $data[$session][4])[1] ?? '';
+        $config = resellerGetRouterConfig($session);
+        if (!$config) {
+            $generateResult = ['error' => 'Konfigurasi router tidak ditemukan.'];
+        } else {
+        $iphost = $config['iphost'];
+        $userhost = $config['userhost'];
+        $passwdhost = $config['passwdhost'];
+        $hotspotname = $config['hotspotname'];
 
         $API = new RouterosAPI();
         $API->debug = false;
@@ -125,7 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                         'username' => $name,
                         'password' => $name,
                         'profile' => $profile,
-                        'price' => $price
+                        'price' => $price,
+                        'comment' => $comment
                     ];
                 }
             }
@@ -136,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
                 $voucherJson = json_encode($vouchers);
                 $description = "Beli {$qty}x voucher [{$profile}] @ Rp " . number_format($price, 0, ',', '.') . " (diskon {$discount}%) - Router: {$session}";
                 $trxId = deductBalance($reseller['id'], $totalCost, $description, $voucherJson, $session);
+                recordResellerVouchers($reseller['id'], $trxId, $session, $vouchers);
                 logResellerAction($reseller['id'], 'purchase', "Beli {$qty} voucher {$profile} dari {$session}");
 
                 // Refresh reseller data
@@ -153,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_vouchers']))
             }
         } else {
             $generateResult = ['error' => 'Gagal koneksi ke router'];
+        }
         }
     } else {
         $generateResult = ['error' => 'Session router tidak valid'];

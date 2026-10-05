@@ -7,6 +7,7 @@ if(!isset($_SESSION["mikhmon"])){echo "<script>window.location='./admin.php?id=l
 
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/models.php';
+require_once __DIR__ . '/router_helpers.php';
 
 // Get available router sessions from config
 $available_sessions = [];

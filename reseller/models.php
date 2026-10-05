@@ -161,7 +161,64 @@ function refundTransaction($transaction_id) {
     }
 }
 
-// ======================== TRANSACTIONS ========================
+function recordResellerVouchers($reseller_id, $transaction_id, $session_name, $vouchers) {
+    $db = getDB();
+    $stmt = $db->prepare("INSERT OR IGNORE INTO reseller_vouchers (reseller_id, transaction_id, session_name, username, password, profile, comment, router_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $count = 0;
+    foreach ((array)$vouchers as $voucher) {
+        $username = trim((string)($voucher['username'] ?? $voucher['name'] ?? ''));
+        if ($username === '') continue;
+        $stmt->execute([
+            $reseller_id,
+            $transaction_id ?: null,
+            $session_name,
+            $username,
+            (string)($voucher['password'] ?? $username),
+            (string)($voucher['profile'] ?? ''),
+            (string)($voucher['comment'] ?? ''),
+            (string)($voucher['router_id'] ?? '')
+        ]);
+        $count += $stmt->rowCount();
+    }
+    return $count;
+}
+
+function getResellerVouchers($reseller_id, $filters = []) {
+    $db = getDB();
+    $where = ['v.reseller_id = ?'];
+    $params = [$reseller_id];
+    if (!empty($filters['session_name'])) { $where[] = 'v.session_name = ?'; $params[] = $filters['session_name']; }
+    if (!empty($filters['profile'])) { $where[] = 'v.profile = ?'; $params[] = $filters['profile']; }
+    if (!empty($filters['search'])) { $where[] = '(v.username LIKE ? OR v.comment LIKE ?)'; $params[] = '%' . $filters['search'] . '%'; $params[] = '%' . $filters['search'] . '%'; }
+    if (!empty($filters['date_from'])) { $where[] = 'DATE(v.created_at) >= ?'; $params[] = $filters['date_from']; }
+    if (!empty($filters['date_to'])) { $where[] = 'DATE(v.created_at) <= ?'; $params[] = $filters['date_to']; }
+    if (!empty($filters['status'])) { $where[] = 'v.status = ?'; $params[] = $filters['status']; }
+    $limit = max(1, min((int)($filters['limit'] ?? 100), 500));
+    $offset = max(0, (int)($filters['offset'] ?? 0));
+    $sql = 'SELECT v.*, t.created_at AS transaction_created_at FROM reseller_vouchers v LEFT JOIN transactions t ON t.id = v.transaction_id WHERE ' . implode(' AND ', $where) . " ORDER BY v.created_at DESC LIMIT $limit OFFSET $offset";
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll();
+}
+
+function getAllResellerVouchers($filters = []) {
+    $db = getDB();
+    $where = ['1 = 1'];
+    $params = [];
+    if (!empty($filters['reseller_id'])) { $where[] = 'v.reseller_id = ?'; $params[] = (int)$filters['reseller_id']; }
+    if (!empty($filters['session_name'])) { $where[] = 'v.session_name = ?'; $params[] = $filters['session_name']; }
+    if (!empty($filters['profile'])) { $where[] = 'v.profile = ?'; $params[] = $filters['profile']; }
+    if (!empty($filters['search'])) { $where[] = '(v.username LIKE ? OR v.comment LIKE ? OR r.username LIKE ? OR r.name LIKE ?)'; $term = '%' . $filters['search'] . '%'; array_push($params, $term, $term, $term, $term); }
+    if (!empty($filters['date_from'])) { $where[] = 'DATE(v.created_at) >= ?'; $params[] = $filters['date_from']; }
+    if (!empty($filters['date_to'])) { $where[] = 'DATE(v.created_at) <= ?'; $params[] = $filters['date_to']; }
+    $limit = max(1, min((int)($filters['limit'] ?? 500), 1000));
+    $offset = max(0, (int)($filters['offset'] ?? 0));
+    $sql = 'SELECT v.*, r.username AS reseller_username, r.name AS reseller_name FROM reseller_vouchers v LEFT JOIN resellers r ON r.id = v.reseller_id WHERE ' . implode(' AND ', $where) . " ORDER BY v.created_at DESC LIMIT $limit OFFSET $offset";
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll();
+}
+
 
 function getTransactions($reseller_id = null, $filters = []) {
     $db = getDB();
