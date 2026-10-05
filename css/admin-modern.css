@@ -269,6 +269,9 @@ body.mk-admin-body select { font: inherit; }
   background: #fff !important;
   box-shadow: none !important;
 }
+.mk-admin-body .form-control::placeholder { color: #9aaa9f !important; opacity: 1 !important; }
+.mk-admin-body .form-control::-webkit-input-placeholder { color: #9aaa9f !important; opacity: 1 !important; }
+.mk-admin-body .form-control:-ms-input-placeholder { color: #9aaa9f !important; }
 .mk-admin-body .form-control:focus,
 .mk-admin-body .group-item:focus { border-color: var(--mk-brand) !important; box-shadow: 0 0 0 3px rgba(47,133,90,.12) !important; }
 .mk-admin-body .form-group label { display: block; margin-bottom: 6px; color: var(--mk-ink); font-size: 12px; font-weight: 750; }
