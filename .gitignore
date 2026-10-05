@@ -1,0 +1,17 @@
+# Local runtime data
+/data/*.db
+/data/*.db-*
+/data/*.sqlite
+/data/*.sqlite-*
+
+# Local credentials and configuration
+/.env
+/.env.*
+/.cloudflared/
+
+# Logs
+*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
