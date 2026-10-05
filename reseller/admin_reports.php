@@ -16,9 +16,14 @@ $summaryToday = getTransactionSummary(null, 'today');
 $totalBalance = array_sum(array_column($resellers, 'balance'));
 ?>
 
+<div class="mk-admin-page-head">
+    <div><h1>Laporan reseller</h1><p>Ringkasan saldo, pembelian, dan voucher seluruh reseller.</p></div>
+</div>
+<?php include __DIR__ . '/admin_tabs.php'; ?>
+
 <div class="row">
     <div class="col-md-3">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary mk-admin-stat">
             <div class="panel-body text-center">
                 <i class="fa fa-users fa-2x"></i>
                 <h4>Total Reseller</h4>
@@ -28,7 +33,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
         </div>
     </div>
     <div class="col-md-3">
-        <div class="panel panel-success">
+        <div class="panel panel-success mk-admin-stat">
             <div class="panel-body text-center">
                 <i class="fa fa-money fa-2x"></i>
                 <h4>Total Saldo</h4>
@@ -38,7 +43,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
         </div>
     </div>
     <div class="col-md-3">
-        <div class="panel panel-info">
+        <div class="panel panel-info mk-admin-stat">
             <div class="panel-body text-center">
                 <i class="fa fa-shopping-cart fa-2x"></i>
                 <h4>Penjualan Hari Ini</h4>
@@ -48,7 +53,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
         </div>
     </div>
     <div class="col-md-3">
-        <div class="panel panel-warning">
+        <div class="panel panel-warning mk-admin-stat">
             <div class="panel-body text-center">
                 <i class="fa fa-calendar fa-2x"></i>
                 <h4>Penjualan Bulan Ini</h4>
@@ -66,7 +71,7 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
             <div class="panel-heading"><h4><i class="fa fa-bar-chart"></i> Ringkasan Per Reseller</h4></div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped mk-card-table">
                         <thead>
                             <tr>
                                 <th>Reseller</th>
@@ -85,16 +90,16 @@ $totalBalance = array_sum(array_column($resellers, 'balance'));
                             $sMonth = getTransactionSummary($r['id'], 'month');
                         ?>
                             <tr>
-                                <td><strong><?=htmlspecialchars($r['name'])?></strong><br><small class="text-muted"><?=htmlspecialchars($r['username'])?></small></td>
-                                <td class="text-center">
+                                <td data-label="Reseller"><strong><?=htmlspecialchars($r['name'])?></strong><br><small class="text-muted"><?=htmlspecialchars($r['username'])?></small></td>
+                                <td data-label="Status" class="text-center">
                                     <span class="label label-<?=$r['status']==='active'?'success':'danger'?>"><?=$r['status']?></span>
                                 </td>
-                                <td class="text-right">Rp <?=number_format($r['balance'], 0, ',', '.')?></td>
-                                <td class="text-right text-success">Rp <?=number_format($sAll['deposit'], 0, ',', '.')?></td>
-                                <td class="text-right text-info">Rp <?=number_format($sAll['purchase'], 0, ',', '.')?></td>
-                                <td class="text-center"><?=$sAll['deposit_count'] + $sAll['purchase_count']?></td>
-                                <td class="text-right">Rp <?=number_format($sMonth['deposit'], 0, ',', '.')?></td>
-                                <td class="text-right">Rp <?=number_format($sMonth['purchase'], 0, ',', '.')?></td>
+                                <td data-label="Saldo" class="text-right">Rp <?=number_format($r['balance'], 0, ',', '.')?></td>
+                                <td data-label="Total deposit" class="text-right text-success">Rp <?=number_format($sAll['deposit'], 0, ',', '.')?></td>
+                                <td data-label="Total pembelian" class="text-right text-info">Rp <?=number_format($sAll['purchase'], 0, ',', '.')?></td>
+                                <td data-label="Jumlah transaksi" class="text-center"><?=$sAll['deposit_count'] + $sAll['purchase_count']?></td>
+                                <td data-label="Deposit bulan ini" class="text-right">Rp <?=number_format($sMonth['deposit'], 0, ',', '.')?></td>
+                                <td data-label="Pembelian bulan ini" class="text-right">Rp <?=number_format($sMonth['purchase'], 0, ',', '.')?></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -143,27 +148,27 @@ $allVoucherRows = getAllResellerVouchers($voucherAdminFilters);
                         <?php endforeach; ?>
                     </select>
                     <input type="text" name="voucher_session" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['session_name'])?>" placeholder="Router">
-                    <input type="text" name="voucher_profile" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['profile'])?>" placeholder="Profile">
-                    <input type="search" name="voucher_search" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['search'])?>" placeholder="Username/reseller">
+                    <input type="text" name="voucher_profile" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['profile'])?>" placeholder="Profil">
+                    <input type="search" name="voucher_search" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['search'])?>" placeholder="Username atau reseller">
                     <input type="date" name="voucher_date_from" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['date_from'])?>">
                     <input type="date" name="voucher_date_to" class="form-control" value="<?=htmlspecialchars($voucherAdminFilters['date_to'])?>">
                     <button class="btn btn-primary" type="submit"><i class="fa fa-filter"></i> Filter</button>
                 </form>
                 <p class="text-muted">Total ditemukan: <?=count($allVoucherRows)?></p>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead><tr><th>#</th><th>Reseller</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Dibuat</th><th>Comment</th></tr></thead>
+                    <table class="table table-bordered table-striped table-hover mk-card-table">
+                        <thead><tr><th>No.</th><th>Reseller</th><th>Username</th><th>Profil</th><th>Router</th><th>Status</th><th>Dibuat</th><th>Catatan</th></tr></thead>
                         <tbody>
                         <?php foreach ($allVoucherRows as $i => $v): ?>
                         <tr>
-                            <td><?=$i + 1?></td>
-                            <td><?=htmlspecialchars($v['reseller_name'] . ' (' . $v['reseller_username'] . ')')?></td>
-                            <td><strong><?=htmlspecialchars($v['username'])?></strong></td>
-                            <td><?=htmlspecialchars($v['profile'])?></td>
-                            <td><?=htmlspecialchars($v['session_name'])?></td>
-                            <td><span class="label label-<?=$v['status'] === 'active' ? 'success' : 'default'?>"><?=htmlspecialchars($v['status'])?></span></td>
-                            <td><?=date('d/m/Y H:i', strtotime($v['created_at']))?></td>
-                            <td><small><?=htmlspecialchars($v['comment'])?></small></td>
+                            <td data-label="No."><?=$i + 1?></td>
+                            <td data-label="Reseller"><?=htmlspecialchars($v['reseller_name'] . ' (' . $v['reseller_username'] . ')')?></td>
+                            <td data-label="Username"><strong><?=htmlspecialchars($v['username'])?></strong></td>
+                            <td data-label="Profil"><?=htmlspecialchars($v['profile'])?></td>
+                            <td data-label="Router"><?=htmlspecialchars($v['session_name'])?></td>
+                            <td data-label="Status"><span class="label label-<?=$v['status'] === 'active' ? 'success' : 'default'?>"><?=htmlspecialchars($v['status'] === 'active' ? 'Aktif' : $v['status'])?></span></td>
+                            <td data-label="Dibuat"><?=date('d/m/Y H:i', strtotime($v['created_at']))?></td>
+                            <td data-label="Catatan"><small><?=htmlspecialchars($v['comment'])?></small></td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($allVoucherRows)): ?><tr><td colspan="8" class="text-center">Belum ada voucher tercatat.</td></tr><?php endif; ?>

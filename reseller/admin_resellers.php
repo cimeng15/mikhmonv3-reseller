@@ -22,19 +22,22 @@ if (isset($data) && is_array($data)) {
 $resellers = getAllResellers();
 ?>
 
+<div class="mk-admin-page-head">
+    <div><h1>Kelola reseller</h1><p>Atur akun, akses router, status, dan saldo reseller.</p></div>
+</div>
+<?php include __DIR__ . '/admin_tabs.php'; ?>
+
+<?php if (!$showAddReseller): ?>
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
+        <div class="panel panel-default mk-admin-list-panel">
             <div class="panel-heading">
-                <h4><i class="fa fa-users"></i> Kelola Reseller
-                    <button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#modalAddReseller">
-                        <i class="fa fa-plus"></i> Tambah Reseller
-                    </button>
+                <h4><i class="fa fa-users"></i> Daftar Reseller
                 </h4>
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="resellerTable">
+                    <table class="table table-bordered table-striped table-hover mk-card-table" id="resellerTable">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -53,21 +56,20 @@ $resellers = getAllResellers();
                         <?php else: ?>
                             <?php $no=1; foreach($resellers as $r): ?>
                             <tr id="row-<?=$r['id']?>">
-                                <td><?=$no++?></td>
-                                <td><strong><?=htmlspecialchars($r['username'])?></strong></td>
-                                <td><?=htmlspecialchars($r['name'])?></td>
-                                <td><?=htmlspecialchars($r['phone'])?></td>
-                                <td class="text-right"><strong>Rp <?=number_format($r['balance'], 0, ',', '.')?></strong></td>
-                                <td><small><?=htmlspecialchars($r['allowed_sessions'] ?: 'Semua')?></small></td>
-                                <td class="text-center">
+                                <td data-label="No."><?=$no++?></td>
+                                <td data-label="Username"><strong><?=htmlspecialchars($r['username'])?></strong></td>
+                                <td data-label="Nama"><?=htmlspecialchars($r['name'])?></td>
+                                <td data-label="Telepon"><?=htmlspecialchars($r['phone'])?></td>
+                                <td data-label="Saldo" class="text-right"><strong>Rp <?=number_format($r['balance'], 0, ',', '.')?></strong></td>
+                                <td data-label="Router"><small><?=htmlspecialchars($r['allowed_sessions'] ?: 'Semua')?></small></td>
+                                <td data-label="Status" class="text-center">
                                     <?php if($r['status'] === 'active'): ?>
                                         <span class="label label-success">Aktif</span>
                                     <?php else: ?>
                                         <span class="label label-danger">Nonaktif</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-xs">
+                                <td data-label="Aksi" class="text-center">
                                         <button class="btn btn-info btn-deposit" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Deposit">
                                             <i class="fa fa-money"></i>
                                         </button>
@@ -80,7 +82,6 @@ $resellers = getAllResellers();
                                         <button class="btn btn-danger btn-delete" data-id="<?=$r['id']?>" data-name="<?=htmlspecialchars($r['name'])?>" title="Hapus">
                                             <i class="fa fa-trash"></i>
                                         </button>
-                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -92,51 +93,55 @@ $resellers = getAllResellers();
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-<!-- Modal Add Reseller -->
-<div class="modal fade" id="modalAddReseller" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
-                <h4 class="modal-title"><i class="fa fa-user-plus"></i> Tambah Reseller</h4>
-            </div>
-            <form id="formAddReseller">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Username <span class="text-danger">*</span></label>
-                        <input type="text" name="username" class="form-control" required placeholder="username login reseller">
-                    </div>
-                    <div class="form-group">
-                        <label>Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>No. Telepon</label>
-                        <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx">
-                    </div>
-                    <div class="form-group">
-                        <label>Router yang Diizinkan</label>
-                        <select name="allowed_sessions[]" class="form-control" multiple size="4">
-                            <?php foreach($available_sessions as $s): ?>
-                            <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <small class="text-muted">Kosongkan = akses semua router. Ctrl+Click untuk pilih banyak.</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan</button>
-                </div>
-            </form>
+<?php if ($showAddReseller): ?>
+<section class="mk-add-reseller-card" aria-labelledby="addResellerTitle">
+    <div class="mk-add-reseller-intro">
+        <span class="mk-add-reseller-icon"><i class="fa fa-user-plus"></i></span>
+        <div>
+            <span class="eyebrow">Akun baru</span>
+            <h2 id="addResellerTitle">Tambah reseller</h2>
+            <p>Buat akun, tentukan router yang dapat digunakan, lalu reseller bisa langsung masuk melalui portal khusus.</p>
         </div>
     </div>
-</div>
+    <form id="formAddReseller" class="mk-add-reseller-form">
+        <div class="mk-form-grid">
+            <div class="form-group">
+                <label for="addUsername">Username <span class="text-danger">*</span></label>
+                <input id="addUsername" type="text" name="username" class="form-control" required autocomplete="off" placeholder="Username login reseller">
+                <small class="text-muted">Gunakan username yang singkat dan mudah dikenali.</small>
+            </div>
+            <div class="form-group">
+                <label for="addPassword">Password <span class="text-danger">*</span></label>
+                <input id="addPassword" type="password" name="password" class="form-control" required autocomplete="new-password" placeholder="Buat password aman">
+                <small class="text-muted">Password hanya digunakan untuk portal reseller.</small>
+            </div>
+            <div class="form-group">
+                <label for="addName">Nama lengkap <span class="text-danger">*</span></label>
+                <input id="addName" type="text" name="name" class="form-control" required placeholder="Nama pemilik atau outlet">
+            </div>
+            <div class="form-group">
+                <label for="addPhone">Nomor telepon</label>
+                <input id="addPhone" type="tel" name="phone" class="form-control" inputmode="tel" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="form-group mk-form-grid-wide">
+                <label for="addSessions">Router yang diizinkan</label>
+                <select id="addSessions" name="allowed_sessions[]" class="form-control mk-session-select" multiple size="4">
+                    <?php foreach($available_sessions as $s): ?>
+                    <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
+                    <?php endforeach; ?>
+                </select>
+                <small class="text-muted">Kosongkan bila reseller boleh memakai semua router. Gunakan Ctrl atau Command untuk memilih beberapa router.</small>
+            </div>
+        </div>
+        <div class="mk-form-actions">
+            <a class="btn btn-default" href="./admin.php?id=resellers"><i class="fa fa-arrow-left"></i> Kembali</a>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Reseller</button>
+        </div>
+    </form>
+</section>
+<?php endif; ?>
 
 <!-- Modal Edit Reseller -->
 <div class="modal fade" id="modalEditReseller" tabindex="-1">

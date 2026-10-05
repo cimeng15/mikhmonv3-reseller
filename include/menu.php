@@ -160,17 +160,17 @@ if (!isset($_SESSION["mikhmon"])) {
   } elseif ($id == "resellers" || $id == "reseller-delete" || $id == "reseller-toggle") {
     $sresellers = "active";
     $rslmenu = "menu-open";
-    $mpage = "Reseller Management";
+    $mpage = "Kelola Reseller";
   } elseif ($id == "reseller-deposits") {
     $sresellers = "active";
     $sresellerdeposits = "active";
     $rslmenu = "menu-open";
-    $mpage = "Reseller Deposits";
+    $mpage = "Saldo dan Transaksi";
   } elseif ($id == "reseller-reports") {
     $sresellers = "active";
     $sresellerreports = "active";
     $rslmenu = "menu-open";
-    $mpage = "Reseller Reports";
+    $mpage = "Laporan Reseller";
   } elseif ($id == "reseller-add") {
     $sresellers = "active";
     $rslmenu = "menu-open";
@@ -250,7 +250,7 @@ if($idleto != "disable"){
   </div>
   <div class="dropdown-container <?= $rslmenu; ?>">
     <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"> <i class="fa fa-list"></i> Kelola Reseller</a>
-    <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"> <i class="fa fa-money"></i> Deposit</a>
+    <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"> <i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
     <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"> <i class="fa fa-bar-chart"></i> Laporan</a>
   </div>
   <a href="./admin.php?id=settings&router=new-<?= rand(1111,9999) ?>" class="menu <?= $snsettings ?>"><i class="fa fa-plus"></i> <?= $_add_router ?></a>
@@ -305,7 +305,7 @@ include('./info.php');
         if ($sesname == "" || $sesname== "mikhmon") {
         } else {
         if($sesname == $session){
-          echo '<option value="' . $sesname. '">'.$sesname. ' &#x2666;</option>';
+          echo '<option value="' . $sesname. '">'.$sesname. ' (aktif)</option>';
         }else{
           echo '<option value="' . $sesname. '">'.$sesname. '</option>';
         }
@@ -392,7 +392,7 @@ include('./info.php');
   </div>
   <div class="dropdown-container">
     <a href="./admin.php?id=resellers" class="menu"> <i class="fa fa-list"></i> Kelola Reseller</a>
-    <a href="./admin.php?id=reseller-deposits" class="menu"> <i class="fa fa-money"></i> Deposit</a>
+    <a href="./admin.php?id=reseller-deposits" class="menu"> <i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
     <a href="./admin.php?id=reseller-reports" class="menu"> <i class="fa fa-bar-chart"></i> Laporan</a>
   </div>
   <a href="./?hotspot=uplogo&session=<?= $session; ?>" class="menu <?= $uplogo; ?>"> <i class="fa fa-upload "></i> <?= $_upload_logo ?> </a>

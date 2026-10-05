@@ -23,9 +23,14 @@ $transactions = getTransactions($filter_reseller ?: null, $filters);
 $summary = getTransactionSummary($filter_reseller ?: null);
 ?>
 
+<div class="mk-admin-page-head">
+    <div><h1>Saldo dan transaksi</h1><p>Tambah saldo reseller dan pantau seluruh arus transaksi.</p></div>
+</div>
+<?php include __DIR__ . '/admin_tabs.php'; ?>
+
 <div class="row">
     <div class="col-md-4">
-        <div class="panel panel-success">
+        <div class="panel panel-success mk-admin-stat">
             <div class="panel-body text-center">
                 <h4><i class="fa fa-arrow-down text-success"></i> Total Deposit</h4>
                 <h3 class="text-success">Rp <?=number_format($summary['deposit'], 0, ',', '.')?></h3>
@@ -34,7 +39,7 @@ $summary = getTransactionSummary($filter_reseller ?: null);
         </div>
     </div>
     <div class="col-md-4">
-        <div class="panel panel-info">
+        <div class="panel panel-info mk-admin-stat">
             <div class="panel-body text-center">
                 <h4><i class="fa fa-shopping-cart text-info"></i> Total Pembelian</h4>
                 <h3 class="text-info">Rp <?=number_format($summary['purchase'], 0, ',', '.')?></h3>
@@ -43,7 +48,7 @@ $summary = getTransactionSummary($filter_reseller ?: null);
         </div>
     </div>
     <div class="col-md-4">
-        <div class="panel panel-warning">
+        <div class="panel panel-warning mk-admin-stat">
             <div class="panel-body text-center">
                 <h4><i class="fa fa-refresh text-warning"></i> Total Refund</h4>
                 <h3 class="text-warning">Rp <?=number_format($summary['refund'], 0, ',', '.')?></h3>
@@ -56,13 +61,13 @@ $summary = getTransactionSummary($filter_reseller ?: null);
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4><i class="fa fa-money"></i> Quick Deposit</h4></div>
+            <div class="panel-heading"><h4><i class="fa fa-money"></i> Tambah Deposit</h4></div>
             <div class="panel-body">
                 <form class="form-inline" id="formQuickDeposit">
                     <div class="form-group">
                         <label>Reseller:</label>
                         <select name="reseller_id" class="form-control" required>
-                            <option value="">-- Pilih Reseller --</option>
+                            <option value="">Pilih reseller</option>
                             <?php foreach($resellers as $r): ?>
                             <option value="<?=$r['id']?>"><?=htmlspecialchars($r['name'])?> (Saldo: Rp <?=number_format($r['balance'],0,',','.')?>)</option>
                             <?php endforeach; ?>
@@ -74,7 +79,7 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                     </div>
                     <div class="form-group">
                         <label>Keterangan:</label>
-                        <input type="text" name="description" class="form-control" placeholder="Transfer / Cash" style="width:200px">
+                        <input type="text" name="description" class="form-control" placeholder="Transfer bank atau tunai" style="width:200px">
                     </div>
                     <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Deposit</button>
                 </form>
@@ -121,7 +126,7 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="table table-bordered table-striped table-hover mk-card-table">
                         <thead>
                             <tr>
                                 <th>Tanggal</th>
@@ -139,9 +144,9 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                         <?php else: ?>
                             <?php foreach($transactions as $t): ?>
                             <tr>
-                                <td><?=date('d/m/Y H:i', strtotime($t['created_at']))?></td>
-                                <td><?=htmlspecialchars($t['reseller_name'] ?? '-')?></td>
-                                <td>
+                                <td data-label="Tanggal"><?=date('d/m/Y H:i', strtotime($t['created_at']))?></td>
+                                <td data-label="Reseller"><?=htmlspecialchars($t['reseller_name'] ?? '-')?></td>
+                                <td data-label="Tipe">
                                     <?php if($t['type']=='deposit'): ?>
                                         <span class="label label-success">Deposit</span>
                                     <?php elseif($t['type']=='purchase'): ?>
@@ -150,10 +155,10 @@ $summary = getTransactionSummary($filter_reseller ?: null);
                                         <span class="label label-warning">Refund</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-right">Rp <?=number_format($t['amount'], 0, ',', '.')?></td>
-                                <td class="text-right">Rp <?=number_format($t['balance_before'], 0, ',', '.')?></td>
-                                <td class="text-right">Rp <?=number_format($t['balance_after'], 0, ',', '.')?></td>
-                                <td><?=htmlspecialchars($t['description'])?></td>
+                                <td data-label="Jumlah" class="text-right">Rp <?=number_format($t['amount'], 0, ',', '.')?></td>
+                                <td data-label="Saldo sebelum" class="text-right">Rp <?=number_format($t['balance_before'], 0, ',', '.')?></td>
+                                <td data-label="Saldo sesudah" class="text-right">Rp <?=number_format($t['balance_after'], 0, ',', '.')?></td>
+                                <td data-label="Keterangan"><?=htmlspecialchars($t['description'])?></td>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

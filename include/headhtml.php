@@ -34,6 +34,8 @@ error_reporting(0);
 		<link rel="stylesheet" type="text/css" href="css/font-awesome/css/font-awesome.min.css" />
 		<!-- Mikhmon UI -->
 		<link rel="stylesheet" href="css/mikhmon-ui.<?= $theme; ?>.min.css">
+		<!-- Modern admin UI -->
+		<link rel="stylesheet" href="css/admin-modern.css?v=<?=filemtime(__DIR__ . '/../css/admin-modern.css')?>">
 		<!-- favicon -->
 		<link rel="icon" href="./img/favicon.png" />
 		<!-- jQuery -->
@@ -44,7 +46,7 @@ error_reporting(0);
 
 		
 	</head>
-	<body>
+	<body class="<?=isset($_SESSION['mikhmon']) ? 'mk-admin-body' : 'mk-admin-login'?>">
 		<div class="wrapper">
 
 			

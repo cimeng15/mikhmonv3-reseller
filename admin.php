@@ -188,6 +188,7 @@ if ($id == "login" || substr($url, -1) == "p") {
 ?>
 <script src="js/mikhmon-ui.<?= $theme; ?>.min.js"></script>
 <script src="js/mikhmon.js?t=<?= str_replace(" ","_",date("Y-m-d H:i:s")); ?>"></script>
+<script src="js/admin-modern.js?v=<?=filemtime(__DIR__ . '/js/admin-modern.js')?>"></script>
 <?php include('./include/info.php'); ?>
 </body>
 </html>

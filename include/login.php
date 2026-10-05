@@ -20,46 +20,34 @@ session_start();
 
 ?>
 
-<div style="padding-top: 5%;"  class="login-box">
-  <div class="card">
-    <div class="card-header">
-      <h3><?= $_please_login ?></h3>
+<div class="mk-login-shell">
+  <section class="mk-login-hero">
+    <div class="mk-login-brand"><img src="img/favicon.png" alt="Mikhmon"><span>MIKHMON Admin</span></div>
+    <div class="mk-login-copy">
+      <span class="eyebrow"><i class="fa fa-shield"></i> Administrator hotspot</span>
+      <h1>Kontrol jaringan dalam satu panel.</h1>
+      <p>Kelola router, hotspot, voucher, laporan, dan reseller melalui antarmuka yang cepat dan responsif.</p>
     </div>
-    <div class="card-body">
-      <div class="text-center pd-5">
-        <img src="img/favicon.png" alt="MIKHMON Logo">
-      </div>
-      <div  class="text-center">
-      <span style="font-size: 25px; margin: 10px;">MIKHMON</span>
-      </div>
-      <center>
-      <form autocomplete="off" action="" method="post">
-      <table class="table" style="width:90%">
-        <tr>
-          <td class="align-middle text-center">
-            <input style="width: 100%; height: 35px; font-size: 16px;" class="form-control" type="text" name="user" id="_username" placeholder="Username" required="1" autofocus>
-          </td>
-        </tr>
-        <tr>
-          <td class="align-middle text-center">
-            <input style="width: 100%; height: 35px; font-size: 16px;" class="form-control" type="password" name="pass" placeholder="Password" required="1">
-          </td>
-        </tr>
-        <tr>
-          <td class="align-middle text-center">
-            <input style="width: 100%; margin-top:20px; height: 35px; font-weight: bold; font-size: 17px;" class="btn-login bg-primary pointer" type="submit" name="login" value="Login">
-          </td>
-        </tr>
-        <tr>
-          <td class="align-middle text-center">
-            <?= $error; ?>
-          </td>
-        </tr>
-      </table>
+  </section>
+  <section class="mk-login-form-side">
+    <div class="mk-login-form">
+      <h2>Masuk ke admin</h2>
+      <p>Gunakan akun administrator Mikhmon.</p>
+      <?php if (!empty($error)): ?><div class="mk-login-error"><i class="fa fa-exclamation-circle"></i> Username atau password tidak benar.</div><?php endif; ?>
+      <form autocomplete="on" action="" method="post">
+        <div class="mk-login-field">
+          <label for="_username">Username</label>
+          <div class="mk-login-input"><i class="fa fa-user"></i><input class="form-control" type="text" name="user" id="_username" placeholder="Masukkan username" autocomplete="username" required autofocus></div>
+        </div>
+        <div class="mk-login-field">
+          <label for="_password">Password</label>
+          <div class="mk-login-input"><i class="fa fa-lock"></i><input class="form-control" type="password" name="pass" id="_password" placeholder="Masukkan password" autocomplete="current-password" required></div>
+        </div>
+        <button class="btn-login" type="submit" name="login"><i class="fa fa-sign-in"></i> Masuk ke Panel</button>
       </form>
-      </center>
+      <div class="mk-login-note"><i class="fa fa-lock"></i> Akses khusus administrator</div>
     </div>
-  </div>
+  </section>
 </div>
 
 </body>
