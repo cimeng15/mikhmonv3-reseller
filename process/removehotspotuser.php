@@ -18,6 +18,8 @@
 session_start();
 // hide all error
 error_reporting(0);
+require_once __DIR__ . '/../reseller/models.php';
+
 if ($removehotspotusers != "") {
 	$uids = explode("~", $removehotspotusers);
 
@@ -25,11 +27,13 @@ if ($removehotspotusers != "") {
 
 	for ($i = 0; $i < $nuids; $i++) {
 
-		$getuname = $API->comm("/ip/hotspot/user/print", array(
-			"?.id" => "$uids[$i]",
-		));
+  $getuname = $API->comm("/ip/hotspot/user/print", array(
+    "?.id" => "$uids[$i]",
+  ));
 
-		$name = $getuname[0]['name'];
+  $name = $getuname[0]['name'] ?? '';
+  $comment = $getuname[0]['comment'] ?? '';
+  markVoucherRemovedFromRouter($session, $name, $comment);
 
 		$getscr = $API->comm("/system/script/print", array(
 			"?name" => "$name",
@@ -71,7 +75,9 @@ if ($removehotspotusers != "") {
 		"?.id" => "$removehotspotuser",
 	));
 
-	$name = $getuname[0]['name'];
+	$name = $getuname[0]['name'] ?? '';
+	$comment = $getuname[0]['comment'] ?? '';
+	markVoucherRemovedFromRouter($session, $name, $comment);
 
 	$getscr = $API->comm("/system/script/print", array(
 		"?name" => "$name",

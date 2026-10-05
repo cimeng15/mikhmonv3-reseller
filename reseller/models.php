@@ -201,6 +201,48 @@ function getResellerVouchers($reseller_id, $filters = []) {
     return $stmt->fetchAll();
 }
 
+function resellerUsernameMatchesComment($comment, $username) {
+    $pattern = '/(?:^|\s)reseller:' . preg_quote((string)$username, '/') . '(?:\s|$)/i';
+    return (bool)preg_match($pattern, (string)$comment);
+}
+
+function markVoucherRemovedFromRouter($session_name, $username, $comment = '', $status = 'removed_from_router') {
+    $allowedStatuses = ['active', 'expired', 'disabled', 'removed_from_router'];
+    if (!in_array($status, $allowedStatuses, true)) $status = 'removed_from_router';
+    $db = getDB();
+    $resellers = $db->query('SELECT id, username FROM resellers')->fetchAll();
+    foreach ($resellers as $reseller) {
+        if (resellerUsernameMatchesComment($comment, $reseller['username'])) {
+            $stmt = $db->prepare('UPDATE reseller_vouchers SET status = ? WHERE reseller_id = ? AND session_name = ? AND username = ?');
+            $stmt->execute([$status, $reseller['id'], $session_name, $username]);
+            return $stmt->rowCount();
+        }
+    }
+    return 0;
+}
+
+function markVouchersMissingFromRouter($reseller_id, $session_name, $liveUsernames) {
+    $db = getDB();
+    $liveUsernames = array_values(array_filter(array_map('strval', (array)$liveUsernames)));
+    if (empty($liveUsernames)) {
+        $stmt = $db->prepare("UPDATE reseller_vouchers SET status = 'removed_from_router' WHERE reseller_id = ? AND session_name = ? AND status = 'active'");
+        $stmt->execute([$reseller_id, $session_name]);
+        return $stmt->rowCount();
+    }
+    $placeholders = implode(',', array_fill(0, count($liveUsernames), '?'));
+    $params = array_merge([$reseller_id, $session_name], $liveUsernames);
+    $stmt = $db->prepare("UPDATE reseller_vouchers SET status = 'removed_from_router' WHERE reseller_id = ? AND session_name = ? AND status = 'active' AND username NOT IN ($placeholders)");
+    $stmt->execute($params);
+    return $stmt->rowCount();
+}
+
+function getResellerVoucherProfiles($reseller_id) {
+    $db = getDB();
+    $stmt = $db->prepare('SELECT DISTINCT profile FROM reseller_vouchers WHERE reseller_id = ? AND profile <> "" ORDER BY profile');
+    $stmt->execute([$reseller_id]);
+    return array_column($stmt->fetchAll(), 'profile');
+}
+
 function getAllResellerVouchers($filters = []) {
     $db = getDB();
     $where = ['1 = 1'];

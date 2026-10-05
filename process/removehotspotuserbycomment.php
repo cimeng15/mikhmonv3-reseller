@@ -18,6 +18,8 @@
 session_start();
 // hide all error
 error_reporting(0);
+require_once __DIR__ . '/../reseller/models.php';
+
 $getuser = $API->comm("/ip/hotspot/user/print", array(
   "?comment" => "$removehotspotuserbycomment",
   "?uptime" => "00:00:00"
@@ -30,6 +32,7 @@ $_SESSION['ubc'] = "";
 for ($i = 0; $i < $TotalReg; $i++) {
   $userdetails = $getuser[$i];
   $uid = $userdetails['.id'];
+  markVoucherRemovedFromRouter($session, $userdetails['name'] ?? '', $userdetails['comment'] ?? '');
 
   $API->comm("/ip/hotspot/user/remove", array(
     ".id" => "$uid",

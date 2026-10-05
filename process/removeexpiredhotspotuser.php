@@ -18,6 +18,8 @@
 session_start();
 // hide all error
 error_reporting(0);
+require_once __DIR__ . '/../reseller/models.php';
+
 $getuser = $API->comm("/ip/hotspot/user/print", array(
   "?limit-uptime" => "1s",
 ));
@@ -29,6 +31,7 @@ $_SESSION['ubc'] = "";
 for ($i = 0; $i < $TotalReg; $i++) {
   $userdetails = $getuser[$i];
   $uid = $userdetails['.id'];
+  markVoucherRemovedFromRouter($session, $userdetails['name'] ?? '', $userdetails['comment'] ?? '', 'expired');
 
   $API->comm("/ip/hotspot/user/remove", array(
     ".id" => "$uid",

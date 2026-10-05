@@ -4,6 +4,8 @@
  * Shared router/session helpers for reseller-only data access.
  */
 
+require_once __DIR__ . '/models.php';
+
 if (!function_exists('resellerGetRouterConfig')) {
     function resellerGetRouterConfig($sessionName) {
         global $data;
@@ -70,8 +72,16 @@ if (!function_exists('resellerCommentBelongsTo')) {
     }
 }
 
-if (!function_exists('resellerFetchOwnedVouchers')) {
-    function resellerFetchOwnedVouchers($sessionName, $resellerUsername, $allowedSessions) {
+function updateVoucherStatusesFromRouter($resellerId, $sessionName, $liveUsers) {
+    $liveUsernames = [];
+    foreach ((array)$liveUsers as $user) {
+        if (is_array($user) && !empty($user['name'])) $liveUsernames[] = (string)$user['name'];
+    }
+    return markVouchersMissingFromRouter($resellerId, $sessionName, $liveUsernames);
+}
+
+
+    function resellerFetchOwnedVouchers($sessionName, $resellerUsername, $resellerId, $allowedSessions) {
         [$api, $error] = resellerConnect($sessionName, $allowedSessions);
         if ($error !== null) {
             return ['success' => false, 'error' => $error, 'vouchers' => []];
@@ -80,15 +90,48 @@ if (!function_exists('resellerFetchOwnedVouchers')) {
         try {
             $users = $api->comm('/ip/hotspot/user/print');
             $owned = [];
+            $liveUsernames = [];
             if (is_array($users)) {
                 foreach ($users as $user) {
                     if (isset($user['!trap']) || !is_array($user)) {
                         continue;
                     }
-                    if (resellerCommentBelongsTo($user['comment'] ?? '', $resellerUsername)) {
-                        $user['_session_name'] = $sessionName;
-                        $owned[] = $user;
+                    $username = (string)($user['name'] ?? '');
+                    $comment = (string)($user['comment'] ?? '');
+                    if (!resellerCommentBelongsTo($comment, $resellerUsername)) {
+                        continue;
                     }
+                    $liveUsernames[] = $username;
+                    $user['_session_name'] = $sessionName;
+                    $user['_exists_on_router'] = true;
+                    $owned[] = $user;
+                }
+            }
+
+            markVouchersMissingFromRouter($resellerId, $sessionName, $liveUsernames);
+            // Historical local records remain visible after router deletion.
+            $localRows = getResellerVouchers($resellerId, [
+                'session_name' => $sessionName,
+                'limit' => 500
+            ]);
+            $liveNames = [];
+            foreach ($owned as $live) {
+                $liveNames[(string)($live['name'] ?? '')] = true;
+            }
+            foreach ($localRows as $local) {
+                $localName = (string)$local['username'];
+                if (!isset($liveNames[$localName])) {
+                    $owned[] = [
+                        'name' => $localName,
+                        'password' => $local['password'],
+                        'profile' => $local['profile'],
+                        'comment' => $local['comment'],
+                        'disabled' => $local['status'] === 'disabled' ? 'true' : 'false',
+                        '_session_name' => $local['session_name'],
+                        '_exists_on_router' => false,
+                        '_local_status' => $local['status'],
+                        '_local_created_at' => $local['created_at']
+                    ];
                 }
             }
             return ['success' => true, 'error' => null, 'vouchers' => $owned];
@@ -96,4 +139,4 @@ if (!function_exists('resellerFetchOwnedVouchers')) {
             $api->disconnect();
         }
     }
-}
+

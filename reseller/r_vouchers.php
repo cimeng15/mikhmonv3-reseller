@@ -13,7 +13,7 @@ $voucherRows = [];
 $voucherError = '';
 
 if ($voucherSession !== '') {
-    $result = resellerFetchOwnedVouchers($voucherSession, $reseller['username'], $allSessions);
+    $result = resellerFetchOwnedVouchers($voucherSession, $reseller['username'], $reseller['id'], $allSessions);
     if (!$result['success']) {
         $voucherError = $result['error'];
     } else {
@@ -21,7 +21,7 @@ if ($voucherSession !== '') {
     }
 } else {
     foreach ($allSessions as $sessionName) {
-        $result = resellerFetchOwnedVouchers($sessionName, $reseller['username'], $allSessions);
+        $result = resellerFetchOwnedVouchers($sessionName, $reseller['username'], $reseller['id'], $allSessions);
         if ($result['success']) {
             $voucherRows = array_merge($voucherRows, $result['vouchers']);
         } elseif ($voucherError === '') {
@@ -47,8 +47,10 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
     if ($voucherSearch !== '' && strpos($haystack, strtolower($voucherSearch)) === false) return false;
     if ($voucherProfile !== '' && ($voucher['profile'] ?? '') !== $voucherProfile) return false;
 
-    if ($voucherStatus === 'disabled' && (($voucher['disabled'] ?? 'false') !== 'true')) return false;
-    if ($voucherStatus === 'active' && (($voucher['disabled'] ?? 'false') === 'true')) return false;
+    if ($voucherStatus === 'removed_from_router' && (($voucher['_exists_on_router'] ?? false) === true)) return false;
+    if ($voucherStatus === 'expired' && (($voucher['_local_status'] ?? '') !== 'expired')) return false;
+    if ($voucherStatus === 'active' && (($voucher['_exists_on_router'] ?? false) !== true || (($voucher['disabled'] ?? 'false') === 'true'))) return false;
+    if ($voucherStatus === 'disabled' && (($voucher['_exists_on_router'] ?? false) !== true || (($voucher['disabled'] ?? 'false') !== 'true'))) return false;
     return true;
 }));
 ?>
@@ -91,6 +93,8 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                     <option value="">Semua Status</option>
                     <option value="active" <?=$voucherStatus === 'active' ? 'selected' : ''?>>Aktif</option>
                     <option value="disabled" <?=$voucherStatus === 'disabled' ? 'selected' : ''?>>Disabled</option>
+                    <option value="expired" <?=$voucherStatus === 'expired' ? 'selected' : ''?>>Expired</option>
+                    <option value="removed_from_router" <?=$voucherStatus === 'removed_from_router' ? 'selected' : ''?>>Dihapus dari Router</option>
                 </select>
             </div>
             <div class="form-group">
@@ -109,12 +113,12 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>#</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Comment</th><th>Aksi</th>
+                        <th>#</th><th>Username</th><th>Profile</th><th>Router</th><th>Status</th><th>Comment</th><th>Dibuat</th><th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($voucherRows)): ?>
-                    <tr><td colspan="7" class="text-center">Belum ada voucher milik Anda.</td></tr>
+                    <tr><td colspan="8" class="text-center">Belum ada voucher milik Anda.</td></tr>
                 <?php else: ?>
                     <?php foreach ($voucherRows as $number => $voucher): ?>
                     <tr>
@@ -123,13 +127,16 @@ $voucherRows = array_values(array_filter($voucherRows, function ($voucher) use (
                         <td><?=htmlspecialchars($voucher['profile'] ?? '-')?></td>
                         <td><?=htmlspecialchars($voucher['_session_name'] ?? '-')?></td>
                         <td>
-                            <?php if (($voucher['disabled'] ?? 'false') === 'true'): ?>
+                            <?php if (($voucher['_exists_on_router'] ?? false) !== true): ?>
+                                <span class="label label-default">Dihapus dari Router</span>
+                            <?php elseif (($voucher['disabled'] ?? 'false') === 'true'): ?>
                                 <span class="label label-danger">Disabled</span>
                             <?php else: ?>
                                 <span class="label label-success">Active</span>
                             <?php endif; ?>
                         </td>
                         <td><?=htmlspecialchars($voucher['comment'] ?? '')?></td>
+                        <td><?=htmlspecialchars($voucher['_local_created_at'] ?? '-')?></td>
                         <td>
                             <a class="btn btn-xs btn-default" href="index.php?page=vouchers&session=<?=urlencode($voucher['_session_name'] ?? '')?>&search=<?=urlencode($voucher['name'] ?? '')?>">
                                 <i class="fa fa-search"></i> Detail
