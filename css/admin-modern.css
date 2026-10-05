@@ -118,7 +118,7 @@ body.mk-admin-body select { font: inherit; }
 }
 .mk-admin-body #logout { color: #9f2929; }
 
-/* Sidebar */
+/* Sidebar — override legacy inline styles */
 .mk-admin-body .sidenav {
   position: fixed;
   inset: var(--mk-topbar) auto 0 0;
@@ -130,15 +130,20 @@ body.mk-admin-body select { font: inherit; }
   overflow-x: hidden;
   overflow-y: auto;
   color: #fff;
-  border: 0;
+  border: 0 !important;
+  border-right: 0 !important;
   background: var(--mk-brand-dark);
   box-shadow: 10px 0 35px rgba(16, 43, 30, .08);
   transition: transform .24s ease;
+  display: block !important;
 }
 .mk-admin-body .sidenav .menu,
 .mk-admin-body .sidenav > a,
 .mk-admin-body .sidenav .dropdown-btn,
-.mk-admin-body .sidenav .dropdown-container > a {
+.mk-admin-body .sidenav .dropdown-container,
+.mk-admin-body .sidenav .dropdown-container > a,
+.mk-admin-body .sidenav .mk-sidebar-group-label {
+  display: flex !important;
   width: 100%;
   min-height: 44px;
   display: flex;
@@ -171,6 +176,7 @@ body.mk-admin-body select { font: inherit; }
 .mk-admin-body .sidenav .fa { width: 18px; flex: none; text-align: center; }
 .mk-admin-body .sidenav .fa-caret-down { width: auto; margin-left: auto; }
 .mk-admin-body .sidenav .dropdown-container {
+  display: block !important;
   margin: 2px 0 7px;
   padding: 3px 0 3px 12px;
   border-left: 1px solid rgba(255,255,255,.12);
@@ -203,11 +209,12 @@ body.mk-admin-body select { font: inherit; }
 
 /* Sidebar is visible by default on desktop */
 
-/* Main content */
+/* Main content — override legacy inline margin */
 .mk-admin-body #main {
   min-width: 0;
   min-height: 100vh;
   margin-left: 264px !important;
+  width: auto !important;
   padding-top: var(--mk-topbar);
   background: var(--mk-bg);
   transition: margin .24s ease;
