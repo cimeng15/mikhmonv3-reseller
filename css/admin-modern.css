@@ -315,6 +315,39 @@ body.mk-admin-body select { font: inherit; }
 .mk-admin-body .modal-footer { padding: 15px 18px; border-color: var(--mk-line); }
 .mk-admin-body .modal-body { padding: 18px; }
 .mk-admin-body .modal-header .close { width: 38px; height: 38px; display: grid; place-items: center; margin: -5px -5px 0 0; color: var(--mk-muted); border: 0; border-radius: 10px; background: var(--mk-soft); opacity: 1; }
+
+/* Modal system — Mikhmon has no Bootstrap JS, so we handle modals ourselves */
+.mk-admin-body .modal {
+  display: none !important;
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: rgba(9, 26, 17, .5);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+.mk-admin-body .modal.mk-modal-open {
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  opacity: 1;
+}
+.mk-admin-body .modal .modal-dialog {
+  width: 100%;
+  max-width: 540px;
+  margin: 0;
+  transform: translateY(30px) scale(.97);
+  transition: transform .24s ease;
+}
+.mk-admin-body .modal.mk-modal-open .modal-dialog {
+  transform: translateY(0) scale(1);
+}
+.mk-admin-body .modal .modal-dialog.modal-sm { max-width: 400px; }
+
 .mk-admin-body #notify { z-index: 2000; border-radius: 12px; }
 
 /* Admin page headings and metric cards */

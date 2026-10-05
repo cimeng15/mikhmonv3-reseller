@@ -105,5 +105,52 @@
       cleanInlineStyles();
       setTimeout(cleanInlineStyles, 10);
     });
+
+    /* ====== Lightweight modal system (no Bootstrap JS) ====== */
+    function modalOpen(el) {
+      if (!el) return;
+      el.classList.add('mk-modal-open');
+      body.style.overflow = 'hidden';
+    }
+    function modalClose(el) {
+      if (!el) return;
+      el.classList.remove('mk-modal-open');
+      body.style.overflow = '';
+    }
+
+    /* data-toggle="modal" data-target="#id" */
+    $(document).on('click', '[data-toggle="modal"]', function (e) {
+      e.preventDefault();
+      var target = $(this).data('target') || $(this).attr('href');
+      modalOpen(document.querySelector(target));
+    });
+
+    /* data-dismiss="modal" (close button inside modal) */
+    $(document).on('click', '[data-dismiss="modal"]', function () {
+      modalClose($(this).closest('.modal')[0]);
+    });
+
+    /* Click on backdrop (outside modal-dialog) to close */
+    $(document).on('click', '.modal.mk-modal-open', function (e) {
+      if (e.target === this) modalClose(this);
+    });
+
+    /* Escape key closes topmost modal */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var openModals = document.querySelectorAll('.modal.mk-modal-open');
+        if (openModals.length) modalClose(openModals[openModals.length - 1]);
+      }
+    });
+
+    /* jQuery $.fn.modal polyfill so existing code works */
+    if (typeof $.fn.modal === 'undefined') {
+      $.fn.modal = function (action) {
+        return this.each(function () {
+          if (action === 'show') modalOpen(this);
+          else if (action === 'hide') modalClose(this);
+        });
+      };
+    }
   });
 })();
