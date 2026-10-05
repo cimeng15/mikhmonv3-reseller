@@ -12,6 +12,11 @@ require_once __DIR__ . '/models.php';
 require_once __DIR__ . '/../lib/routeros_api.class.php';
 require_once __DIR__ . '/../include/config.php';
 
+// Keep relative assets and links working from /reseller, /reseller/,
+// or when this directory becomes a dedicated subdomain document root.
+$scriptDirectory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+$resellerBaseUrl = rtrim($scriptDirectory === '.' ? '' : $scriptDirectory, '/') . '/';
+
 // Handle Login
 if (isset($_POST['reseller_login'])) {
     $username = trim($_POST['username'] ?? '');
@@ -44,6 +49,7 @@ if (!isResellerLoggedIn()) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mikhmon Reseller Panel</title>
+    <base href="<?=htmlspecialchars($resellerBaseUrl, ENT_QUOTES, 'UTF-8')?>">
     <link rel="icon" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css?v=<?=filemtime(__DIR__ . '/assets/css/mikhmon-ui.'.$theme.'.min.css')?>">
     <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css?v=<?=filemtime(__DIR__ . '/assets/css/font-awesome/font-awesome.min.css')?>">
@@ -136,6 +142,7 @@ if (isset($data) && is_array($data)) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mikhmon Reseller - <?=htmlspecialchars($reseller['name'])?></title>
+    <base href="<?=htmlspecialchars($resellerBaseUrl, ENT_QUOTES, 'UTF-8')?>">
     <link rel="icon" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/mikhmon-ui.<?=$theme?>.min.css?v=<?=filemtime(__DIR__ . '/assets/css/mikhmon-ui.'.$theme.'.min.css')?>">
     <link rel="stylesheet" href="assets/css/font-awesome/font-awesome.min.css?v=<?=filemtime(__DIR__ . '/assets/css/font-awesome/font-awesome.min.css')?>">
