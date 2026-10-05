@@ -24,16 +24,15 @@ $resellers = getAllResellers();
 
 <div class="mk-admin-page-head">
     <div><h1>Kelola reseller</h1><p>Atur akun, akses router, status, dan saldo reseller.</p></div>
+    <button class="btn btn-success" data-toggle="modal" data-target="#modalAddReseller"><i class="fa fa-user-plus"></i> Tambah Reseller</button>
 </div>
 <?php include __DIR__ . '/admin_tabs.php'; ?>
 
-<?php if (!$showAddReseller): ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default mk-admin-list-panel">
             <div class="panel-heading">
-                <h4><i class="fa fa-users"></i> Daftar Reseller
-                </h4>
+                <h4><i class="fa fa-users"></i> Daftar Reseller</h4>
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
@@ -101,55 +100,51 @@ $resellers = getAllResellers();
         </div>
     </div>
 </div>
-<?php endif; ?>
 
-<?php if ($showAddReseller): ?>
-<section class="mk-add-reseller-card" aria-labelledby="addResellerTitle">
-    <div class="mk-add-reseller-intro">
-        <span class="mk-add-reseller-icon"><i class="fa fa-user-plus"></i></span>
-        <div>
-            <span class="eyebrow">Akun baru</span>
-            <h2 id="addResellerTitle">Tambah reseller</h2>
-            <p>Buat akun, tentukan router yang dapat digunakan, lalu reseller bisa langsung masuk melalui portal khusus.</p>
+<!-- Modal Tambah Reseller -->
+<div class="modal fade" id="modalAddReseller" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
+                <h4 class="modal-title"><i class="fa fa-user-plus"></i> Tambah Reseller</h4>
+            </div>
+            <form id="formAddReseller">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Username <span class="text-danger">*</span></label>
+                        <input type="text" name="username" class="form-control" required autocomplete="off" placeholder="Username login reseller">
+                    </div>
+                    <div class="form-group">
+                        <label>Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" required autocomplete="new-password" placeholder="Buat password aman">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required placeholder="Nama pemilik atau outlet">
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Telepon</label>
+                        <input type="tel" name="phone" class="form-control" inputmode="tel" placeholder="08xxxxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Router yang Diizinkan</label>
+                        <select name="allowed_sessions[]" class="form-control" multiple size="4">
+                            <?php foreach($available_sessions as $s): ?>
+                            <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <small class="text-muted">Kosongkan bila reseller boleh memakai semua router. Ctrl/Cmd + klik untuk memilih lebih dari satu.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Reseller</button>
+                </div>
+            </form>
         </div>
     </div>
-    <form id="formAddReseller" class="mk-add-reseller-form">
-        <div class="mk-form-grid">
-            <div class="form-group">
-                <label for="addUsername">Username <span class="text-danger">*</span></label>
-                <input id="addUsername" type="text" name="username" class="form-control" required autocomplete="off" placeholder="Username login reseller">
-                <small class="text-muted">Gunakan username yang singkat dan mudah dikenali.</small>
-            </div>
-            <div class="form-group">
-                <label for="addPassword">Password <span class="text-danger">*</span></label>
-                <input id="addPassword" type="password" name="password" class="form-control" required autocomplete="new-password" placeholder="Buat password aman">
-                <small class="text-muted">Password hanya digunakan untuk portal reseller.</small>
-            </div>
-            <div class="form-group">
-                <label for="addName">Nama lengkap <span class="text-danger">*</span></label>
-                <input id="addName" type="text" name="name" class="form-control" required placeholder="Nama pemilik atau outlet">
-            </div>
-            <div class="form-group">
-                <label for="addPhone">Nomor telepon</label>
-                <input id="addPhone" type="tel" name="phone" class="form-control" inputmode="tel" placeholder="08xxxxxxxxxx">
-            </div>
-            <div class="form-group mk-form-grid-wide">
-                <label for="addSessions">Router yang diizinkan</label>
-                <select id="addSessions" name="allowed_sessions[]" class="form-control mk-session-select" multiple size="4">
-                    <?php foreach($available_sessions as $s): ?>
-                    <option value="<?=htmlspecialchars($s)?>"><?=htmlspecialchars($s)?></option>
-                    <?php endforeach; ?>
-                </select>
-                <small class="text-muted">Kosongkan bila reseller boleh memakai semua router. Gunakan Ctrl atau Command untuk memilih beberapa router.</small>
-            </div>
-        </div>
-        <div class="mk-form-actions">
-            <a class="btn btn-default" href="./admin.php?id=resellers"><i class="fa fa-arrow-left"></i> Kembali</a>
-            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Reseller</button>
-        </div>
-    </form>
-</section>
-<?php endif; ?>
+</div>
 
 <!-- Modal Edit Reseller -->
 <div class="modal fade" id="modalEditReseller" tabindex="-1">
@@ -196,7 +191,7 @@ $resellers = getAllResellers();
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
                     <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i> Simpan Perubahan</button>
                 </div>
             </form>
@@ -210,7 +205,7 @@ $resellers = getAllResellers();
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><i class="fa fa-times" aria-hidden="true"></i></button>
-                <h4 class="modal-title"><i class="fa fa-money"></i> Tambah Deposit</h4>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> Tambah Deposit</h4>
             </div>
             <form id="formDeposit">
                 <input type="hidden" name="reseller_id" id="depositResellerId">
@@ -222,12 +217,12 @@ $resellers = getAllResellers();
                     </div>
                     <div class="form-group">
                         <label>Keterangan</label>
-                        <input type="text" name="description" class="form-control" placeholder="Transfer BCA / Cash">
+                        <input type="text" name="description" class="form-control" placeholder="Transfer bank / Tunai">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Deposit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Tambah Deposit</button>
                 </div>
             </form>
         </div>

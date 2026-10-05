@@ -246,10 +246,7 @@ if($idleto != "disable"){
 } ?>  
   <a href="./admin.php?id=sessions" class="menu <?= $ssesslist; ?>"><i class="fa fa-gear"></i> <?= $_admin_settings ?></a>
   <div class="menu spa"></div>
-  <div class="mk-sidebar-group-label"><i class="fa fa-users"></i> Reseller</div>
-  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-list"></i> Kelola Reseller</a>
-  <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"><i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
-  <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"><i class="fa fa-bar-chart"></i> Laporan</a>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-users"></i> Kelola Reseller</a>
   <div class="menu spa"></div>
   <a href="./admin.php?id=settings&router=new-<?= rand(1111,9999) ?>" class="menu <?= $snsettings ?>"><i class="fa fa-plus"></i> <?= $_add_router ?></a>
   <a href="./admin.php?id=about" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
@@ -391,10 +388,7 @@ include('./info.php');
   </div>
   <!--reseller-->
   <div class="menu spa"></div>
-  <div class="mk-sidebar-group-label"><i class="fa fa-users"></i> Reseller</div>
-  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-list"></i> Kelola Reseller</a>
-  <a href="./admin.php?id=reseller-deposits" class="menu <?= $sresellerdeposits; ?>"><i class="fa fa-credit-card"></i> Saldo dan Transaksi</a>
-  <a href="./admin.php?id=reseller-reports" class="menu <?= $sresellerreports; ?>"><i class="fa fa-bar-chart"></i> Laporan</a>
+  <a href="./admin.php?id=resellers" class="menu <?= $sresellers; ?>"><i class="fa fa-users"></i> Kelola Reseller</a>
   <div class="menu spa"></div>
   <!--about-->
   <a href="./?hotspot=about&session=<?= $session; ?>" class="menu <?= $sabout; ?>"><i class="fa fa-info-circle"></i> <?= $_about ?></a>
